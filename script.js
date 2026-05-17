@@ -1,66 +1,50 @@
+// ════════════════════════════════════════════════════════════
+//  CANCER ANALYTICS — app.js
+// ════════════════════════════════════════════════════════════
+
 // ─── MOCK DATA ───────────────────────────────────────────────
 
 const USERS = {
   'admin@ca.ai': {
     password: 'demo1234',
-    name: 'Dr. Rodrigues',
+    name:     'Dr. Rodrigues',
     initials: 'DR',
-    role: 'Hematologista'
+    role:     'Hematologista'
   }
 };
 
 const PATIENTS = [
   {
-    id: 'P-001',
-    name: 'Ana Beatriz Souza',
-    age: 34,
-    sex: 'F',
-    blood_type: 'A+',
-    diagnosis_history: 'Anemia ferropriva (2021)',
-    last_exam: '2025-05-12',
-    status: 'danger',
+    id: 'P-001', name: 'Ana Beatriz Souza', age: 34, sex: 'F',
+    blood_type: 'A+', diagnosis_history: 'Anemia ferropriva (2021)',
+    last_exam: '2025-05-12', status: 'danger',
     exams: [
-      { id: 'E-012', date: '2025-05-12', result: 'POSITIVO',    confidence: 96.4, acc: 94.1, recall: 97.2, f1: 95.6, file: '🔬', model: 'ResNet-50 v2.1' },
-      { id: 'E-009', date: '2025-04-03', result: 'NEGATIVO',    confidence: 88.7, acc: 93.5, recall: 91.2, f1: 92.3, file: '🔬', model: 'ResNet-50 v2.0' },
-      { id: 'E-005', date: '2025-02-17', result: 'NEGATIVO',    confidence: 91.2, acc: 93.5, recall: 91.2, f1: 92.3, file: '🔬', model: 'ResNet-50 v1.9' }
+      { id: 'E-012', date: '2025-05-12', result: 'POSITIVO',  confidence: 96.4, acc: 94.1, recall: 97.2, f1: 95.6, file: '🔬', model: 'ResNet-50 v2.1' },
+      { id: 'E-009', date: '2025-04-03', result: 'NEGATIVO',  confidence: 88.7, acc: 93.5, recall: 91.2, f1: 92.3, file: '🔬', model: 'ResNet-50 v2.0' },
+      { id: 'E-005', date: '2025-02-17', result: 'NEGATIVO',  confidence: 91.2, acc: 93.5, recall: 91.2, f1: 92.3, file: '🔬', model: 'ResNet-50 v1.9' }
     ]
   },
   {
-    id: 'P-002',
-    name: 'Carlos Eduardo Lima',
-    age: 57,
-    sex: 'M',
-    blood_type: 'O-',
-    diagnosis_history: 'Hipertensão arterial, Diabetes tipo 2',
-    last_exam: '2025-05-08',
-    status: 'success',
+    id: 'P-002', name: 'Carlos Eduardo Lima', age: 57, sex: 'M',
+    blood_type: 'O-', diagnosis_history: 'Hipertensão arterial, Diabetes tipo 2',
+    last_exam: '2025-05-08', status: 'success',
     exams: [
       { id: 'E-011', date: '2025-05-08', result: 'NEGATIVO', confidence: 92.1, acc: 94.2, recall: 93.0, f1: 93.6, file: '🔬', model: 'ResNet-50 v2.1' },
       { id: 'E-007', date: '2025-03-20', result: 'NEGATIVO', confidence: 89.3, acc: 93.5, recall: 91.2, f1: 92.3, file: '🔬', model: 'ResNet-50 v2.0' }
     ]
   },
   {
-    id: 'P-003',
-    name: 'Fernanda Oliveira',
-    age: 22,
-    sex: 'F',
-    blood_type: 'B+',
-    diagnosis_history: 'Sem histórico relevante',
-    last_exam: '2025-05-01',
-    status: 'danger',
+    id: 'P-003', name: 'Fernanda Oliveira', age: 22, sex: 'F',
+    blood_type: 'B+', diagnosis_history: 'Sem histórico relevante',
+    last_exam: '2025-05-01', status: 'danger',
     exams: [
       { id: 'E-010', date: '2025-05-01', result: 'POSITIVO', confidence: 98.8, acc: 94.1, recall: 97.2, f1: 95.6, file: '🔬', model: 'ResNet-50 v2.1' }
     ]
   },
   {
-    id: 'P-004',
-    name: 'Marcos Henrique Dias',
-    age: 45,
-    sex: 'M',
-    blood_type: 'AB+',
-    diagnosis_history: 'Leucemia mieloide (remissão 2022)',
-    last_exam: '2025-04-22',
-    status: 'warning',
+    id: 'P-004', name: 'Marcos Henrique Dias', age: 45, sex: 'M',
+    blood_type: 'AB+', diagnosis_history: 'Leucemia mieloide (remissão 2022)',
+    last_exam: '2025-04-22', status: 'warning',
     exams: [
       { id: 'E-008', date: '2025-04-22', result: 'INCONCLUSIVO', confidence: 61.3, acc: 92.8, recall: 88.4, f1: 90.5, file: '🔬', model: 'ResNet-50 v2.0' },
       { id: 'E-004', date: '2025-01-10', result: 'POSITIVO',     confidence: 94.7, acc: 94.1, recall: 97.2, f1: 95.6, file: '🔬', model: 'ResNet-50 v1.9' },
@@ -68,14 +52,9 @@ const PATIENTS = [
     ]
   },
   {
-    id: 'P-005',
-    name: 'Juliana Santos Freitas',
-    age: 61,
-    sex: 'F',
-    blood_type: 'A-',
-    diagnosis_history: 'Hipotireoidismo, artrite reumatoide',
-    last_exam: '2025-03-14',
-    status: 'success',
+    id: 'P-005', name: 'Juliana Santos Freitas', age: 61, sex: 'F',
+    blood_type: 'A-', diagnosis_history: 'Hipotireoidismo, artrite reumatoide',
+    last_exam: '2025-03-14', status: 'success',
     exams: [
       { id: 'E-006', date: '2025-03-14', result: 'NEGATIVO', confidence: 95.6, acc: 94.2, recall: 93.0, f1: 93.6, file: '🔬', model: 'ResNet-50 v2.0' },
       { id: 'E-002', date: '2024-12-02', result: 'NEGATIVO', confidence: 90.4, acc: 93.5, recall: 91.2, f1: 92.3, file: '🔬', model: 'ResNet-50 v1.8' }
@@ -88,7 +67,9 @@ const PATIENTS = [
 let currentUser     = null;
 let uploadedFile    = null;
 let selectedPatient = null;
-let lastResult      = null; // guarda o resultado da última análise para o PDF
+let lastResult      = null;
+let gradcamMode     = 'overlay';
+let gradcamData     = null;
 
 // ─── HELPERS ─────────────────────────────────────────────────
 
@@ -109,9 +90,17 @@ function statusBadge(status, result) {
 }
 
 function resultBadge(result) {
-  if (result === 'POSITIVO')     return `<span class="badge danger"><span class="badge-dot"></span>Positivo</span>`;
-  if (result === 'NEGATIVO')     return `<span class="badge success"><span class="badge-dot"></span>Negativo</span>`;
+  if (result === 'POSITIVO') return `<span class="badge danger"><span class="badge-dot"></span>Positivo</span>`;
+  if (result === 'NEGATIVO') return `<span class="badge success"><span class="badge-dot"></span>Negativo</span>`;
   return `<span class="badge warning"><span class="badge-dot"></span>Inconclusivo</span>`;
+}
+
+function hexToRgb(hex) {
+  return [
+    parseInt(hex.slice(1, 3), 16),
+    parseInt(hex.slice(3, 5), 16),
+    parseInt(hex.slice(5, 7), 16)
+  ];
 }
 
 // ─── AUTH ─────────────────────────────────────────────────────
@@ -141,12 +130,7 @@ function doLogout() {
   document.getElementById('input-email').value    = '';
   document.getElementById('input-password').value = '';
   currentUser = null;
-  lastResult  = null;
 }
-
-document.getElementById('input-password').addEventListener('keydown', e => {
-  if (e.key === 'Enter') doLogin();
-});
 
 // ─── INIT ─────────────────────────────────────────────────────
 
@@ -157,7 +141,7 @@ function initApp() {
   switchView('dashboard', document.querySelector('[data-view=dashboard]'));
 }
 
-// ─── NAVIGATION ───────────────────────────────────────────────
+// ─── NAVEGAÇÃO ────────────────────────────────────────────────
 
 function switchView(id, btn) {
   document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
@@ -194,12 +178,12 @@ function renderDashboard() {
       <td style="font-family:var(--mono);font-size:12px;color:var(--text-muted)">${formatDate(e.date)}</td>
       <td>${resultBadge(e.result)}</td>
       <td style="font-family:var(--mono);font-size:12px">${e.confidence.toFixed(1)}%</td>
-      <td><button class="btn-row">Ver →</button></td>
+      <td><button class="btn-row">Ver &rarr;</button></td>
     </tr>
   `).join('');
 }
 
-// ─── PATIENTS TABLE ───────────────────────────────────────────
+// ─── TABELA DE PACIENTES ──────────────────────────────────────
 
 function renderPatientsTable() {
   const tbody = document.getElementById('patients-table-body');
@@ -215,16 +199,16 @@ function renderPatientsTable() {
         </div>
       </td>
       <td style="font-family:var(--mono);font-size:12px;color:var(--text-muted)">${p.id}</td>
-      <td style="font-size:13px;color:var(--text-muted)">${p.age} anos · ${p.sex === 'F' ? 'Feminino' : 'Masculino'}</td>
+      <td style="font-size:13px;color:var(--text-muted)">${p.age} anos &middot; ${p.sex === 'F' ? 'Feminino' : 'Masculino'}</td>
       <td style="font-family:var(--mono);font-size:12px;color:var(--text-muted)">${formatDate(p.last_exam)}</td>
-      <td>${statusBadge(p.status, p.exams[0]?.result)}</td>
+      <td>${statusBadge(p.status, p.exams[0] ? p.exams[0].result : '')}</td>
       <td style="font-family:var(--mono);font-size:12px">${p.exams.length}</td>
-      <td><button class="btn-row">Histórico →</button></td>
+      <td><button class="btn-row">Hist&oacute;rico &rarr;</button></td>
     </tr>
   `).join('');
 }
 
-// ─── PATIENT DETAIL ───────────────────────────────────────────
+// ─── DETALHE DO PACIENTE ──────────────────────────────────────
 
 function openPatient(id) {
   selectedPatient = PATIENTS.find(p => p.id === id);
@@ -238,13 +222,13 @@ function openPatient(id) {
     <div class="patient-info-main">
       <div class="patient-name">${p.name}</div>
       <div class="patient-meta">
-        <span>🪪 ${p.id}</span>
-        <span>🎂 ${p.age} anos</span>
-        <span>⚧ ${p.sex === 'F' ? 'Feminino' : 'Masculino'}</span>
-        <span>🩸 Tipo ${p.blood_type}</span>
+        <span>ID: ${p.id}</span>
+        <span>${p.age} anos</span>
+        <span>${p.sex === 'F' ? 'Feminino' : 'Masculino'}</span>
+        <span>Tipo ${p.blood_type}</span>
       </div>
     </div>
-    <div>${statusBadge(p.status, latest?.result)}</div>
+    <div>${statusBadge(p.status, latest ? latest.result : '')}</div>
   `;
 
   document.getElementById('detail-clinical').innerHTML = `
@@ -255,9 +239,8 @@ function openPatient(id) {
   `;
 
   if (latest) {
-    const isPos  = latest.result === 'POSITIVO';
-    const color  = latest.result === 'INCONCLUSIVO' ? 'var(--warning)' : isPos ? 'var(--danger)' : 'var(--success)';
-
+    const isPos = latest.result === 'POSITIVO';
+    const color = latest.result === 'INCONCLUSIVO' ? 'var(--warning)' : isPos ? 'var(--danger)' : 'var(--success)';
     document.getElementById('detail-last-result').innerHTML = `
       <div class="info-row"><span class="info-key">Resultado</span>${resultBadge(latest.result)}</div>
       <div class="info-row"><span class="info-key">Confiança</span><span class="info-val" style="color:${color}">${latest.confidence.toFixed(1)}%</span></div>
@@ -275,7 +258,7 @@ function openPatient(id) {
       <div class="exam-card">
         <div class="exam-thumb">${e.file}</div>
         <div class="exam-info">
-          <div class="exam-date">${formatDate(e.date)} · ${e.id}</div>
+          <div class="exam-date">${formatDate(e.date)} &middot; ${e.id}</div>
           <div class="exam-label">Esfregaço de sangue periférico</div>
           <div class="exam-model">${e.model}</div>
         </div>
@@ -295,27 +278,13 @@ function openPatient(id) {
 function populatePatientSelect() {
   const sel = document.getElementById('patient-select');
   while (sel.options.length > 1) sel.remove(1);
-
   PATIENTS.forEach(p => {
-    const opt = document.createElement('option');
+    const opt       = document.createElement('option');
     opt.value       = p.id;
-    opt.textContent = `${p.name} (${p.id})`;
+    opt.textContent = p.name + ' (' + p.id + ')';
     sel.appendChild(opt);
   });
 }
-
-document.getElementById('upload-file').addEventListener('change', function () {
-  if (this.files[0]) handleFile(this.files[0]);
-});
-
-const uploadArea = document.getElementById('upload-area');
-uploadArea.addEventListener('dragover',  e => { e.preventDefault(); uploadArea.classList.add('drag-over'); });
-uploadArea.addEventListener('dragleave', ()  => uploadArea.classList.remove('drag-over'));
-uploadArea.addEventListener('drop', e => {
-  e.preventDefault();
-  uploadArea.classList.remove('drag-over');
-  if (e.dataTransfer.files[0]) handleFile(e.dataTransfer.files[0]);
-});
 
 function handleFile(file) {
   uploadedFile = file;
@@ -324,48 +293,174 @@ function handleFile(file) {
   document.getElementById('preview-size').textContent = (file.size / 1024).toFixed(1) + ' KB';
 
   const reader  = new FileReader();
-  reader.onload = e => {
-    document.getElementById('preview-img-wrap').innerHTML = `<img src="${e.target.result}" alt="preview">`;
+  reader.onload = function(e) {
+    document.getElementById('preview-img-wrap').innerHTML = '<img src="' + e.target.result + '" alt="preview">';
   };
   reader.readAsDataURL(file);
 
-  document.getElementById('btn-analyze').disabled = false;
+  document.getElementById('btn-analyze').disabled         = false;
   document.getElementById('result-panel').classList.remove('show');
-  document.getElementById('analyzing-overlay').classList.remove('show');
-  lastResult = null;
+  document.getElementById('btn-export-pdf').style.display = 'none';
+  gradcamData = null;
 }
 
 function clearUpload() {
   uploadedFile = null;
   lastResult   = null;
-  document.getElementById('upload-file').value               = '';
+  gradcamData  = null;
+
+  document.getElementById('upload-file').value            = '';
   document.getElementById('upload-preview').classList.remove('show');
-  document.getElementById('preview-img-wrap').innerHTML      = '🔬';
-  document.getElementById('btn-analyze').disabled            = true;
+  document.getElementById('preview-img-wrap').innerHTML   = '🔬';
+  document.getElementById('btn-analyze').disabled         = true;
   document.getElementById('result-panel').classList.remove('show');
+  document.getElementById('btn-export-pdf').style.display = 'none';
+}
+
+// ─── GRADCAM SIMULADO ─────────────────────────────────────────
+
+function generateGradCAM(imageSrc, isPositive, isInconclusive) {
+  const loading = document.getElementById('gradcam-loading');
+  loading.classList.add('show');
+
+  const img  = new Image();
+  img.onload = function() {
+    var SIZE = 480;
+
+    var heatCanvas    = document.createElement('canvas');
+    heatCanvas.width  = SIZE;
+    heatCanvas.height = SIZE;
+    var heatCtx       = heatCanvas.getContext('2d');
+
+    heatCtx.fillStyle = '#000';
+    heatCtx.fillRect(0, 0, SIZE, SIZE);
+
+    var blobCount = isPositive ? 6 : isInconclusive ? 3 : 2;
+    var maxRadius = isPositive ? 120 : isInconclusive ? 90 : 70;
+
+    for (var i = 0; i < blobCount; i++) {
+      var cx    = SIZE * (0.25 + Math.random() * 0.5);
+      var cy    = SIZE * (0.25 + Math.random() * 0.5);
+      var r     = maxRadius * (0.5 + Math.random() * 0.5);
+      var alpha = isPositive ? 0.55 + Math.random() * 0.35 : 0.3 + Math.random() * 0.3;
+      drawHotBlob(heatCtx, cx, cy, r, alpha, isPositive);
+    }
+
+    for (var j = 0; j < 4; j++) {
+      var leftSide = Math.random() < 0.5;
+      var cx2 = leftSide ? Math.random() * SIZE * 0.2 : SIZE * 0.8 + Math.random() * SIZE * 0.2;
+      var cy2 = SIZE * (0.1 + Math.random() * 0.8);
+      var r2  = 60 + Math.random() * 60;
+      drawCoolBlob(heatCtx, cx2, cy2, r2, 0.4 + Math.random() * 0.3);
+    }
+
+    var blurred    = document.createElement('canvas');
+    blurred.width  = SIZE;
+    blurred.height = SIZE;
+    var blurCtx    = blurred.getContext('2d');
+    blurCtx.filter = 'blur(20px)';
+    blurCtx.drawImage(heatCanvas, 0, 0);
+
+    gradcamData = { originalImg: img, heatmapCanvas: blurred, size: SIZE };
+
+    loading.classList.remove('show');
+    setGradcamMode('overlay');
+  };
+  img.src = imageSrc;
+}
+
+function drawHotBlob(ctx, cx, cy, r, alpha, isPositive) {
+  var grad = ctx.createRadialGradient(cx, cy, 0, cx, cy, r);
+  if (isPositive) {
+    grad.addColorStop(0,   'rgba(255, 30,  30,  ' + alpha + ')');
+    grad.addColorStop(0.3, 'rgba(255, 100, 0,   ' + (alpha * 0.8) + ')');
+    grad.addColorStop(0.6, 'rgba(255, 220, 0,   ' + (alpha * 0.5) + ')');
+    grad.addColorStop(1,   'rgba(0,0,0,0)');
+  } else {
+    grad.addColorStop(0,   'rgba(255, 180, 0,  ' + alpha + ')');
+    grad.addColorStop(0.4, 'rgba(255, 220, 50, ' + (alpha * 0.7) + ')');
+    grad.addColorStop(1,   'rgba(0,0,0,0)');
+  }
+  ctx.beginPath();
+  ctx.arc(cx, cy, r, 0, Math.PI * 2);
+  ctx.fillStyle = grad;
+  ctx.fill();
+}
+
+function drawCoolBlob(ctx, cx, cy, r, alpha) {
+  var grad = ctx.createRadialGradient(cx, cy, 0, cx, cy, r);
+  grad.addColorStop(0,   'rgba(0, 120, 255, ' + alpha + ')');
+  grad.addColorStop(0.5, 'rgba(0, 200, 255, ' + (alpha * 0.6) + ')');
+  grad.addColorStop(1,   'rgba(0,0,0,0)');
+  ctx.beginPath();
+  ctx.arc(cx, cy, r, 0, Math.PI * 2);
+  ctx.fillStyle = grad;
+  ctx.fill();
+}
+
+function setGradcamMode(mode) {
+  if (!gradcamData) return;
+  gradcamMode = mode;
+
+  ['original', 'heatmap', 'overlay'].forEach(function(m) {
+    document.getElementById('btn-' + m).classList.toggle('active', m === mode);
+  });
+
+  var canvas = document.getElementById('gradcam-canvas');
+  var ctx    = canvas.getContext('2d');
+  var size   = gradcamData.size;
+
+  canvas.width  = size;
+  canvas.height = size;
+
+  if (mode === 'original') {
+    ctx.drawImage(gradcamData.originalImg, 0, 0, size, size);
+
+  } else if (mode === 'heatmap') {
+    ctx.fillStyle = '#000';
+    ctx.fillRect(0, 0, size, size);
+    ctx.drawImage(gradcamData.heatmapCanvas, 0, 0, size, size);
+
+  } else {
+    ctx.drawImage(gradcamData.originalImg, 0, 0, size, size);
+    var imgData = ctx.getImageData(0, 0, size, size);
+    var d = imgData.data;
+    for (var i = 0; i < d.length; i += 4) {
+      var gray = 0.299 * d[i] + 0.587 * d[i + 1] + 0.114 * d[i + 2];
+      d[i] = d[i + 1] = d[i + 2] = gray;
+    }
+    ctx.putImageData(imgData, 0, 0);
+    ctx.globalAlpha              = 0.7;
+    ctx.globalCompositeOperation = 'screen';
+    ctx.drawImage(gradcamData.heatmapCanvas, 0, 0, size, size);
+    ctx.globalAlpha              = 1;
+    ctx.globalCompositeOperation = 'source-over';
+  }
 }
 
 // ─── ANÁLISE ─────────────────────────────────────────────────
 
-const STEPS = [
-  ['Pré-processando imagem...',    'Normalizando pixels'],
-  ['Segmentando células...',       'Detectando bordas e núcleos'],
-  ['Extraindo features...',        'Camadas convolucionais ativas'],
-  ['Classificando...',             'Forward pass — ResNet-50 v2.1'],
-  ['Gerando probabilidades...',    'Softmax layer']
+var STEPS = [
+  ['Pré-processando imagem...',  'Normalizando pixels'],
+  ['Segmentando células...',     'Detectando bordas e núcleos'],
+  ['Extraindo features...',      'Camadas convolucionais ativas'],
+  ['Classificando...',           'Forward pass — ResNet-50 v2.1'],
+  ['Gerando probabilidades...',  'Softmax layer']
 ];
 
 function runAnalysis() {
   if (!uploadedFile) return;
 
-  document.getElementById('btn-analyze').disabled = true;
+  document.getElementById('btn-analyze').disabled         = true;
   document.getElementById('result-panel').classList.remove('show');
+  document.getElementById('btn-export-pdf').style.display = 'none';
+  gradcamData = null;
 
-  const overlay = document.getElementById('analyzing-overlay');
+  var overlay = document.getElementById('analyzing-overlay');
   overlay.classList.add('show');
 
-  let step = 0;
-  const interval = setInterval(() => {
+  var step     = 0;
+  var interval = setInterval(function() {
     if (step < STEPS.length) {
       document.getElementById('analyzing-text').textContent = STEPS[step][0];
       document.getElementById('analyzing-step').textContent = STEPS[step][1];
@@ -380,70 +475,69 @@ function runAnalysis() {
 }
 
 function showResult() {
-  const pid  = document.getElementById('patient-select').value;
-  const rand = Math.random();
+  var pid  = document.getElementById('patient-select').value;
+  var rand = Math.random();
 
-  const isPositive     = rand > 0.45;
-  const isInconclusive = !isPositive && rand > 0.35;
+  var isPositive     = rand > 0.45;
+  var isInconclusive = !isPositive && rand > 0.35;
 
-  const confidence = isPositive
-    ? (85 + Math.random() * 13).toFixed(1)
-    : isInconclusive
-      ? (55 + Math.random() * 15).toFixed(1)
-      : (86 + Math.random() * 12).toFixed(1);
+  var confidence = (
+    isPositive     ? 85 + Math.random() * 13 :
+    isInconclusive ? 55 + Math.random() * 15 :
+                     86 + Math.random() * 12
+  ).toFixed(1);
 
-  const leukPct = isPositive || isInconclusive
+  var leukPct = (isPositive || isInconclusive)
     ? parseFloat(confidence)
     : 100 - parseFloat(confidence);
-  const normPct = 100 - leukPct;
+  var normPct = 100 - leukPct;
 
-  const panel = document.getElementById('result-panel');
-  panel.classList.add('show');
+  var acc    = (92 + Math.random() * 3).toFixed(1);
+  var recall = (90 + Math.random() * 7).toFixed(1);
+  var f1     = ((parseFloat(acc) + parseFloat(recall)) / 2).toFixed(1);
 
-  document.getElementById('result-icon').textContent = isPositive ? '⚠️' : isInconclusive ? '🔍' : '✅';
+  document.getElementById('result-panel').classList.add('show');
+  document.getElementById('result-icon').textContent =
+    isPositive ? '⚠️' : isInconclusive ? '🔍' : '✅';
 
-  const verdict = document.getElementById('result-verdict');
-  verdict.textContent = isPositive
-    ? 'Indícios de Leucemia Detectados'
-    : isInconclusive
-      ? 'Resultado Inconclusivo'
-      : 'Células Normais';
+  var verdict       = document.getElementById('result-verdict');
+  verdict.textContent = isPositive ? 'Indícios de Leucemia Detectados'
+                      : isInconclusive ? 'Resultado Inconclusivo'
+                      : 'Células Normais';
   verdict.className   = 'result-verdict ' + (isPositive ? 'danger' : isInconclusive ? '' : 'success');
   verdict.style.color = isInconclusive ? 'var(--warning)' : '';
 
   document.getElementById('result-sub').textContent =
-    `Análise concluída · Modelo ResNet-50 v2.1 · Confiança ${confidence}%`;
+    'Análise concluída · ResNet-50 v2.1 · Confiança ' + confidence + '%';
 
-  const acc    = (92 + Math.random() * 3).toFixed(1);
-  const recall = (90 + Math.random() * 7).toFixed(1);
-  const f1     = ((parseFloat(acc) + parseFloat(recall)) / 2).toFixed(1);
+  document.getElementById('result-metrics').innerHTML =
+    '<div class="metric-box"><div class="metric-name">Acurácia</div><div class="metric-val accent">' + acc + '%</div></div>' +
+    '<div class="metric-box"><div class="metric-name">Recall</div><div class="metric-val accent">' + recall + '%</div></div>' +
+    '<div class="metric-box"><div class="metric-name">F1-score</div><div class="metric-val accent">' + f1 + '%</div></div>';
 
-  document.getElementById('result-metrics').innerHTML = `
-    <div class="metric-box">
-      <div class="metric-name">Acurácia</div>
-      <div class="metric-val accent">${acc}%</div>
-    </div>
-    <div class="metric-box">
-      <div class="metric-name">Recall</div>
-      <div class="metric-val accent">${recall}%</div>
-    </div>
-    <div class="metric-box">
-      <div class="metric-name">F1-score</div>
-      <div class="metric-val accent">${f1}%</div>
-    </div>
-  `;
-
-  setTimeout(() => {
+  setTimeout(function() {
     document.getElementById('bar-leukemia').style.width     = leukPct.toFixed(1) + '%';
     document.getElementById('bar-leukemia-pct').textContent = leukPct.toFixed(1) + '%';
     document.getElementById('bar-normal').style.width       = normPct.toFixed(1) + '%';
     document.getElementById('bar-normal-pct').textContent   = normPct.toFixed(1) + '%';
   }, 50);
 
-  // Guarda o resultado para uso no PDF
-  const resultLabel = isPositive ? 'POSITIVO' : isInconclusive ? 'INCONCLUSIVO' : 'NEGATIVO';
+  // GradCAM
+  var previewImg = document.querySelector('#preview-img-wrap img');
+  if (previewImg) {
+    generateGradCAM(previewImg.src, isPositive, isInconclusive);
+  }
+
+  // Salva estado para PDF
+  var patient = null;
+  for (var i = 0; i < PATIENTS.length; i++) {
+    if (PATIENTS[i].id === pid) { patient = PATIENTS[i]; break; }
+  }
+
   lastResult = {
-    result:     resultLabel,
+    patient:    patient,
+    fileName:   uploadedFile ? uploadedFile.name : '—',
+    result:     isPositive ? 'POSITIVO' : isInconclusive ? 'INCONCLUSIVO' : 'NEGATIVO',
     confidence: parseFloat(confidence),
     leukPct:    leukPct.toFixed(1),
     normPct:    normPct.toFixed(1),
@@ -451,420 +545,253 @@ function showResult() {
     recall:     parseFloat(recall),
     f1:         parseFloat(f1),
     model:      'ResNet-50 v2.1',
-    fileName:   uploadedFile?.name || 'N/A',
-    date:       new Date().toISOString().slice(0, 10),
-    patientId:  pid || null,
-    analyst:    currentUser?.name || 'N/A'
+    date:       new Date().toLocaleString('pt-BR'),
+    analyst:    currentUser ? currentUser.name : '—'
   };
 
-  // Adiciona exame ao paciente selecionado
-  if (pid) {
-    const patient = PATIENTS.find(p => p.id === pid);
-    if (patient) {
-      patient.exams.unshift({
-        id:         'E-NEW',
-        date:       lastResult.date,
-        result:     resultLabel,
-        confidence: lastResult.confidence,
-        acc:        lastResult.acc,
-        recall:     lastResult.recall,
-        f1:         lastResult.f1,
-        file:       '🔬',
-        model:      'ResNet-50 v2.1'
-      });
-      patient.last_exam = lastResult.date;
-      patient.status    = isPositive ? 'danger' : isInconclusive ? 'warning' : 'success';
+  document.getElementById('btn-export-pdf').style.display = 'inline-flex';
 
-      renderDashboard();
-      renderPatientsTable();
-    }
+  // Atualiza paciente mockado
+  if (pid && patient) {
+    var today  = new Date().toISOString().slice(0, 10);
+    var result = isPositive ? 'POSITIVO' : isInconclusive ? 'INCONCLUSIVO' : 'NEGATIVO';
+
+    patient.exams.unshift({
+      id: 'E-NEW', date: today, result: result,
+      confidence: parseFloat(confidence),
+      acc: parseFloat(acc), recall: parseFloat(recall), f1: parseFloat(f1),
+      file: '🔬', model: 'ResNet-50 v2.1'
+    });
+
+    patient.last_exam = today;
+    patient.status    = isPositive ? 'danger' : isInconclusive ? 'warning' : 'success';
+    renderDashboard();
+    renderPatientsTable();
   }
 }
 
 // ─── GERAÇÃO DE PDF ──────────────────────────────────────────
 
-function generatePDFReport() {
+function generatePDF() {
   if (!lastResult) return;
-
-  const btn = document.getElementById('btn-pdf');
-  btn.classList.add('loading');
-  btn.textContent = 'Gerando...';
-
-  // Pequeno delay para dar feedback visual
-  setTimeout(() => {
-    try {
-      buildPDF();
-    } finally {
-      btn.classList.remove('loading');
-      btn.innerHTML = `
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-          <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
-          <polyline points="14 2 14 8 20 8"/>
-          <line x1="16" y1="13" x2="8" y2="13"/>
-          <line x1="16" y1="17" x2="8" y2="17"/>
-          <polyline points="10 9 9 9 8 9"/>
-        </svg>
-        Gerar Relatório PDF`;
-    }
-  }, 100);
+  if (typeof window.jspdf === 'undefined') {
+    var script  = document.createElement('script');
+    script.src  = 'https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js';
+    script.onload = buildPDF;
+    document.head.appendChild(script);
+  } else {
+    buildPDF();
+  }
 }
 
 function buildPDF() {
-  const { jsPDF } = window.jspdf;
-  const doc = new jsPDF({ unit: 'mm', format: 'a4' });
+  var jsPDF = window.jspdf.jsPDF;
+  var doc   = new jsPDF({ unit: 'mm', format: 'a4' });
+  var W     = 210;
+  var r     = lastResult;
+  var p     = r.patient;
 
-  const r      = lastResult;
-  const pid    = r.patientId;
-  const patient = pid ? PATIENTS.find(p => p.id === pid) : null;
-
-  // ── Paleta de cores (RGB) ──────────────────────────
-  const C = {
-    dark:        [10,  13,  20],
-    surface:     [17,  21,  32],
-    accent:      [76,  180, 255],
-    danger:      [255, 91,  107],
-    success:     [77,  255, 195],
-    warning:     [255, 184, 77],
-    inconclusive:[167, 139, 250],
-    text:        [232, 234, 242],
-    muted:       [107, 116, 150],
-    dim:         [61,  68,  96],
-    white:       [255, 255, 255],
-    border:      [30,  36,  56]
+  var C = {
+    bg:      [10,  13,  20],
+    surface: [17,  21,  32],
+    accent:  [76, 180, 255],
+    danger:  [255,  91, 107],
+    success: [77,  255, 195],
+    warning: [255, 184,  77],
+    muted:   [107, 116, 150],
+    border:  [40,   46,  68],
+    white:   [255, 255, 255]
   };
 
-  const W  = 210; // largura A4
-  const H  = 297; // altura A4
-  let   y  = 0;   // cursor vertical
+  var resultColor = r.result === 'POSITIVO' ? C.danger
+                  : r.result === 'NEGATIVO'  ? C.success : C.warning;
 
-  // ── Cor de resultado ──────────────────────────────
-  const resultColor = r.result === 'POSITIVO'
-    ? C.danger
-    : r.result === 'INCONCLUSIVO'
-      ? C.inconclusive
-      : C.success;
+  function sf(c) { doc.setFillColor(c[0], c[1], c[2]); }
+  function st(c) { doc.setTextColor(c[0], c[1], c[2]); }
 
-  const resultLabel = r.result === 'POSITIVO'
-    ? 'POSITIVO — Indicios de Leucemia'
-    : r.result === 'INCONCLUSIVO'
-      ? 'INCONCLUSIVO'
-      : 'NEGATIVO — Celulas Normais';
+  var y = 0;
 
-  // ════════════════════════════════════════════
-  // CABEÇALHO
-  // ════════════════════════════════════════════
-  doc.setFillColor(...C.dark);
-  doc.rect(0, 0, W, 42, 'F');
+  // Cabeçalho
+  sf(C.surface); doc.rect(0, 0, W, 36, 'F');
+  sf(C.accent);  doc.rect(0, 0, 4, 36, 'F');
+  st(C.accent);  doc.setFont('helvetica', 'bold'); doc.setFontSize(15);
+  doc.text('Cancer', 12, 13);
+  st(C.white);   doc.text('Analytics', 35, 13);
+  st(C.muted);   doc.setFont('helvetica', 'normal'); doc.setFontSize(7.5);
+  doc.text('Plataforma de Triagem por IA — Uso Academico', 12, 19);
+  doc.text('Emitido em: ' + r.date, W - 12, 13, { align: 'right' });
+  doc.text('Analista: '  + r.analyst, W - 12, 19, { align: 'right' });
+  sf(C.border); doc.rect(0, 36, W, 0.3, 'F');
+  y = 44;
 
-  // Barra de acento no topo
-  doc.setFillColor(...C.accent);
-  doc.rect(0, 0, W, 3, 'F');
+  // Badge resultado
+  var bW = 80;
+  sf(resultColor); doc.roundedRect(W / 2 - bW / 2, y, bW, 11, 2, 2, 'F');
+  st(C.bg); doc.setFont('helvetica', 'bold'); doc.setFontSize(9);
+  var label = r.result === 'POSITIVO' ? 'INDICIOS DE LEUCEMIA DETECTADOS'
+            : r.result === 'NEGATIVO'  ? 'CELULAS NORMAIS' : 'RESULTADO INCONCLUSIVO';
+  doc.text(label, W / 2, y + 7.5, { align: 'center' });
+  y += 16;
 
-  // Logo (ícone simulado com círculo + texto)
-  doc.setFillColor(...C.accent);
-  doc.roundedRect(14, 10, 14, 14, 3, 3, 'F');
-  doc.setTextColor(...C.dark);
-  doc.setFontSize(8);
-  doc.setFont('helvetica', 'bold');
-  doc.text('CA', 21, 19, { align: 'center' });
+  // Confiança
+  st(resultColor); doc.setFontSize(26); doc.setFont('helvetica', 'bold');
+  doc.text(r.confidence.toFixed(1) + '%', W / 2, y + 9, { align: 'center' });
+  st(C.muted); doc.setFontSize(8); doc.setFont('helvetica', 'normal');
+  doc.text('confianca do modelo', W / 2, y + 16, { align: 'center' });
+  y += 24;
 
-  // Nome do sistema
-  doc.setTextColor(...C.white);
-  doc.setFontSize(15);
-  doc.setFont('helvetica', 'bold');
-  doc.text('CancerAnalytics', 32, 17);
-  doc.setFontSize(8);
-  doc.setFont('helvetica', 'normal');
-  doc.setTextColor(...C.muted);
-  doc.text('Plataforma de Triagem por IA — Uso Academico', 32, 23);
+  // Metricas
+  var mW = 52, mGap = 5;
+  var mX = (W - (mW * 3 + mGap * 2)) / 2;
+  var metrics = [['Acuracia', r.acc + '%'], ['Recall', r.recall + '%'], ['F1-Score', r.f1 + '%']];
+  for (var mi = 0; mi < metrics.length; mi++) {
+    var mx = mX + mi * (mW + mGap);
+    sf(C.surface); doc.roundedRect(mx, y, mW, 18, 2, 2, 'F');
+    st(C.accent); doc.setFont('helvetica', 'bold'); doc.setFontSize(13);
+    doc.text(metrics[mi][1], mx + mW / 2, y + 11, { align: 'center' });
+    st(C.muted);  doc.setFont('helvetica', 'normal'); doc.setFontSize(7);
+    doc.text(metrics[mi][0].toUpperCase(), mx + mW / 2, y + 16, { align: 'center' });
+  }
+  y += 26;
 
-  // Título do relatório (direita)
-  doc.setFontSize(9);
-  doc.setFont('helvetica', 'bold');
-  doc.setTextColor(...C.accent);
-  doc.text('RELATORIO DE ANALISE', W - 14, 14, { align: 'right' });
-  doc.setFont('helvetica', 'normal');
-  doc.setTextColor(...C.muted);
-  doc.setFontSize(7.5);
-  doc.text(`Gerado em: ${new Date().toLocaleString('pt-BR')}`, W - 14, 20, { align: 'right' });
-  doc.text(`Analista: ${r.analyst}`, W - 14, 26, { align: 'right' });
+  // Barras
+  var barX = 14, barW = W - 28;
+  st(C.muted); doc.setFont('helvetica', 'normal'); doc.setFontSize(8);
+  doc.text('Leucemia', barX, y + 4);
+  doc.text(r.leukPct + '%', barX + barW, y + 4, { align: 'right' });
+  sf(C.border); doc.roundedRect(barX, y + 6, barW, 4, 1, 1, 'F');
+  sf(C.danger); doc.roundedRect(barX, y + 6, barW * parseFloat(r.leukPct) / 100, 4, 1, 1, 'F');
+  y += 13;
+  doc.text('Normal', barX, y + 4);
+  doc.text(r.normPct + '%', barX + barW, y + 4, { align: 'right' });
+  sf(C.border); doc.roundedRect(barX, y + 6, barW, 4, 1, 1, 'F');
+  sf(C.success); doc.roundedRect(barX, y + 6, barW * parseFloat(r.normPct) / 100, 4, 1, 1, 'F');
+  y += 16;
 
-  y = 48;
+  // GradCAM
+  sf(C.border); doc.rect(14, y, W - 28, 0.3, 'F'); y += 6;
+  st(C.white); doc.setFont('helvetica', 'bold'); doc.setFontSize(10);
+  doc.text('Mapa de Ativacao - GradCAM', 14, y);
+  st(C.muted); doc.setFont('helvetica', 'normal'); doc.setFontSize(7.5);
+  doc.text('Regioes com maior peso na decisao da rede neural', 14, y + 5);
+  y += 10;
 
-  // ════════════════════════════════════════════
-  // RESULTADO PRINCIPAL — DESTAQUE
-  // ════════════════════════════════════════════
-  doc.setFillColor(...C.surface);
-  doc.roundedRect(14, y, W - 28, 32, 4, 4, 'F');
+  if (gradcamData) {
+    var imgW = 84, imgH = 84, gap = 8;
+    var iX   = (W - imgW * 2 - gap) / 2;
 
-  // Borda lateral colorida
-  doc.setFillColor(...resultColor);
-  doc.roundedRect(14, y, 4, 32, 2, 2, 'F');
+    var origC = document.createElement('canvas');
+    origC.width = origC.height = gradcamData.size;
+    origC.getContext('2d').drawImage(gradcamData.originalImg, 0, 0, gradcamData.size, gradcamData.size);
+    doc.addImage(origC.toDataURL('image/jpeg', 0.85), 'JPEG', iX, y, imgW, imgH);
 
-  // Texto resultado
-  doc.setFontSize(7.5);
-  doc.setFont('helvetica', 'normal');
-  doc.setTextColor(...C.muted);
-  doc.text('CLASSIFICACAO DA IA', 24, y + 9);
+    var ovC   = document.createElement('canvas');
+    ovC.width = ovC.height = gradcamData.size;
+    var ovCtx = ovC.getContext('2d');
+    ovCtx.drawImage(gradcamData.originalImg, 0, 0, gradcamData.size, gradcamData.size);
+    var id = ovCtx.getImageData(0, 0, gradcamData.size, gradcamData.size);
+    for (var pi = 0; pi < id.data.length; pi += 4) {
+      var g = 0.299 * id.data[pi] + 0.587 * id.data[pi + 1] + 0.114 * id.data[pi + 2];
+      id.data[pi] = id.data[pi + 1] = id.data[pi + 2] = g;
+    }
+    ovCtx.putImageData(id, 0, 0);
+    ovCtx.globalAlpha = 0.7;
+    ovCtx.globalCompositeOperation = 'screen';
+    ovCtx.drawImage(gradcamData.heatmapCanvas, 0, 0, gradcamData.size, gradcamData.size);
+    doc.addImage(ovC.toDataURL('image/jpeg', 0.85), 'JPEG', iX + imgW + gap, y, imgW, imgH);
 
-  doc.setFontSize(14);
-  doc.setFont('helvetica', 'bold');
-  doc.setTextColor(...resultColor);
-  doc.text(resultLabel, 24, y + 20);
+    st(C.muted); doc.setFontSize(7.5);
+    doc.text('Original', iX + imgW / 2, y + imgH + 5, { align: 'center' });
+    doc.text('GradCAM Sobreposicao', iX + imgW + gap + imgW / 2, y + imgH + 5, { align: 'center' });
 
-  doc.setFontSize(8);
-  doc.setFont('helvetica', 'normal');
-  doc.setTextColor(...C.muted);
-  doc.text(`Confianca: ${r.confidence.toFixed(1)}%   |   Modelo: ${r.model}   |   Arquivo: ${r.fileName}`, 24, y + 28);
-
-  y += 40;
-
-  // ════════════════════════════════════════════
-  // DADOS DO PACIENTE
-  // ════════════════════════════════════════════
-  // Título de seção
-  const sectionTitle = (label, yPos) => {
-    doc.setFontSize(7);
-    doc.setFont('helvetica', 'bold');
-    doc.setTextColor(...C.accent);
-    doc.text(label.toUpperCase(), 14, yPos);
-    doc.setDrawColor(...C.border);
-    doc.setLineWidth(0.3);
-    doc.line(14, yPos + 2, W - 14, yPos + 2);
-  };
-
-  sectionTitle('Dados do Paciente', y);
-  y += 8;
-
-  if (patient) {
-    const infoGrid = [
-      ['Nome',           patient.name],
-      ['ID do Paciente', patient.id],
-      ['Idade',          `${patient.age} anos`],
-      ['Sexo',           patient.sex === 'F' ? 'Feminino' : 'Masculino'],
-      ['Tipo Sanguineo', patient.blood_type],
-      ['Historico',      patient.diagnosis_history],
-    ];
-
-    // Grade de 2 colunas
-    const colW = (W - 28) / 2;
-    infoGrid.forEach(([key, val], i) => {
-      const col = i % 2;
-      const row = Math.floor(i / 2);
-      const xBase = 14 + col * colW;
-      const yRow  = y + row * 12;
-
-      doc.setFillColor(...C.surface);
-      doc.roundedRect(xBase, yRow, colW - 3, 10, 2, 2, 'F');
-
-      doc.setFontSize(7);
-      doc.setFont('helvetica', 'normal');
-      doc.setTextColor(...C.muted);
-      doc.text(key, xBase + 4, yRow + 4.5);
-
-      doc.setFontSize(8);
-      doc.setFont('helvetica', 'bold');
-      doc.setTextColor(...C.text);
-      // Truncar texto longo
-      const maxW = colW - 10;
-      doc.text(val, xBase + 4, yRow + 8.5, { maxWidth: maxW });
-    });
-
-    y += Math.ceil(infoGrid.length / 2) * 12 + 8;
+    var lgX = iX, lgY = y + imgH + 9, lgW = imgW * 2 + gap;
+    var gradColors = ['#0000ff','#0088ff','#00ffaa','#aaff00','#ffaa00','#ff0000'];
+    for (var gi = 0; gi < gradColors.length; gi++) {
+      var rgb = hexToRgb(gradColors[gi]);
+      doc.setFillColor(rgb[0], rgb[1], rgb[2]);
+      doc.rect(lgX + gi * (lgW / 6), lgY, lgW / 6, 3, 'F');
+    }
+    st(C.muted); doc.setFontSize(6.5);
+    doc.text('Baixa ativacao', lgX, lgY + 7);
+    doc.text('Alta ativacao', lgX + lgW, lgY + 7, { align: 'right' });
+    y += imgH + 20;
   } else {
-    doc.setFillColor(...C.surface);
-    doc.roundedRect(14, y, W - 28, 10, 2, 2, 'F');
-    doc.setFontSize(8);
-    doc.setFont('helvetica', 'italic');
-    doc.setTextColor(...C.muted);
-    doc.text('Nenhum paciente vinculado a esta analise.', 18, y + 7);
-    y += 18;
+    st(C.muted); doc.setFontSize(9);
+    doc.text('GradCAM nao disponivel', W / 2, y + 8, { align: 'center' });
+    y += 14;
   }
 
-  // ════════════════════════════════════════════
-  // MÉTRICAS DO MODELO
-  // ════════════════════════════════════════════
-  sectionTitle('Metricas do Modelo', y);
-  y += 8;
+  // Dados do paciente
+  sf(C.border); doc.rect(14, y, W - 28, 0.3, 'F'); y += 6;
+  st(C.white); doc.setFont('helvetica', 'bold'); doc.setFontSize(10);
+  doc.text('Dados do Paciente', 14, y); y += 7;
 
-  const metrics = [
-    { label: 'Acuracia',   val: `${r.acc}%`,    sub: 'Taxa geral de acerto' },
-    { label: 'Recall',     val: `${r.recall}%`, sub: 'Sensibilidade ao positivo' },
-    { label: 'F1-Score',   val: `${r.f1}%`,     sub: 'Media harmonica P/R' },
-    { label: 'Confianca',  val: `${r.confidence.toFixed(1)}%`, sub: 'Score desta predicao' },
+  var fields = p ? [
+    ['Nome',           p.name],
+    ['ID',             p.id],
+    ['Idade / Sexo',   p.age + ' anos - ' + (p.sex === 'F' ? 'Feminino' : 'Masculino')],
+    ['Tipo Sanguineo', p.blood_type],
+    ['Historico',      p.diagnosis_history],
+    ['Arquivo',        r.fileName],
+    ['Modelo IA',      r.model]
+  ] : [
+    ['Paciente', 'Nao vinculado'],
+    ['Arquivo',  r.fileName],
+    ['Modelo',   r.model]
   ];
 
-  const mW = (W - 28 - 9) / 4;
-  metrics.forEach((m, i) => {
-    const xM = 14 + i * (mW + 3);
+  for (var fi = 0; fi < fields.length; fi++) {
+    sf(C.surface); doc.rect(14, y, W - 28, 7, 'F');
+    st(C.muted); doc.setFont('helvetica', 'normal'); doc.setFontSize(8);
+    doc.text(fields[fi][0], 18, y + 5);
+    st(C.white); doc.setFont('helvetica', 'bold');
+    doc.text(String(fields[fi][1]), W - 16, y + 5, { align: 'right' });
+    sf(C.border); doc.rect(14, y + 7, W - 28, 0.2, 'F');
+    y += 7;
+  }
+  y += 6;
 
-    doc.setFillColor(...C.surface);
-    doc.roundedRect(xM, y, mW, 22, 3, 3, 'F');
+  // Disclaimer
+  if (y > 262) { doc.addPage(); y = 16; }
+  doc.setFillColor(40, 33, 10);
+  doc.roundedRect(14, y, W - 28, 14, 2, 2, 'F');
+  st(C.warning); doc.setFont('helvetica', 'bold'); doc.setFontSize(7.5);
+  doc.text('AVISO', 18, y + 5);
+  doc.setFont('helvetica', 'normal');
+  doc.text('Resultado experimental com fins academicos. Nao substitui diagnostico medico especializado.', 18, y + 10);
 
-    doc.setFontSize(6.5);
-    doc.setFont('helvetica', 'normal');
-    doc.setTextColor(...C.muted);
-    doc.text(m.label.toUpperCase(), xM + mW / 2, y + 6, { align: 'center' });
+  // Rodapé
+  sf(C.border); doc.rect(14, 287, W - 28, 0.3, 'F');
+  st(C.muted); doc.setFontSize(7);
+  doc.text('Cancer Analytics - Plataforma Academica de Triagem por IA', 14, 292);
+  doc.text('Pagina 1', W - 14, 292, { align: 'right' });
 
-    doc.setFontSize(13);
-    doc.setFont('helvetica', 'bold');
-    doc.setTextColor(...C.accent);
-    doc.text(m.val, xM + mW / 2, y + 14.5, { align: 'center' });
+  var pid = p ? p.id : 'sem-paciente';
+  doc.save('relatorio-' + pid + '-' + Date.now() + '.pdf');
+}
 
-    doc.setFontSize(5.5);
-    doc.setFont('helvetica', 'normal');
-    doc.setTextColor(...C.dim);
-    doc.text(m.sub, xM + mW / 2, y + 19.5, { align: 'center' });
+// ─── EVENT LISTENERS ─────────────────────────────────────────
+
+document.addEventListener('DOMContentLoaded', function() {
+  document.getElementById('input-password').addEventListener('keydown', function(e) {
+    if (e.key === 'Enter') doLogin();
   });
 
-  y += 30;
+  document.getElementById('upload-file').addEventListener('change', function() {
+    if (this.files[0]) handleFile(this.files[0]);
+  });
 
-  // ════════════════════════════════════════════
-  // PROBABILIDADES (barras)
-  // ════════════════════════════════════════════
-  sectionTitle('Probabilidades por Classe', y);
-  y += 8;
-
-  const drawBar = (label, pct, color, yPos) => {
-    const barW = W - 28 - 40;
-
-    doc.setFontSize(8);
-    doc.setFont('helvetica', 'normal');
-    doc.setTextColor(...C.text);
-    doc.text(label, 14, yPos + 4);
-
-    // Fundo da barra
-    doc.setFillColor(...C.border);
-    doc.roundedRect(54, yPos, barW, 6, 2, 2, 'F');
-
-    // Preenchimento
-    const fill = Math.max((pct / 100) * barW, 2);
-    doc.setFillColor(...color);
-    doc.roundedRect(54, yPos, fill, 6, 2, 2, 'F');
-
-    // Percentual
-    doc.setFontSize(8);
-    doc.setFont('helvetica', 'bold');
-    doc.setTextColor(...color);
-    doc.text(`${pct}%`, 54 + barW + 4, yPos + 5);
-  };
-
-  drawBar('Leucemia', parseFloat(r.leukPct), C.danger,  y);
-  y += 12;
-  drawBar('Normal',   parseFloat(r.normPct), C.success, y);
-  y += 18;
-
-  // ════════════════════════════════════════════
-  // HISTÓRICO RESUMIDO (se houver paciente)
-  // ════════════════════════════════════════════
-  if (patient && patient.exams.length > 1) {
-    sectionTitle('Historico de Exames', y);
-    y += 8;
-
-    // Cabeçalho da mini-tabela
-    const cols = [14, 42, 90, 130, 165];
-    const headers = ['ID', 'Data', 'Resultado', 'Confianca', 'Modelo'];
-
-    doc.setFillColor(...C.surface);
-    doc.roundedRect(14, y, W - 28, 8, 2, 2, 'F');
-
-    headers.forEach((h, i) => {
-      doc.setFontSize(6.5);
-      doc.setFont('helvetica', 'bold');
-      doc.setTextColor(...C.muted);
-      doc.text(h, cols[i], y + 5.5);
-    });
-    y += 10;
-
-    const examsToShow = patient.exams.slice(0, 5);
-    examsToShow.forEach((e, idx) => {
-      if (idx % 2 === 0) {
-        doc.setFillColor(20, 25, 40);
-        doc.rect(14, y - 1, W - 28, 8, 'F');
-      }
-
-      const rc = e.result === 'POSITIVO' ? C.danger : e.result === 'INCONCLUSIVO' ? C.warning : C.success;
-
-      doc.setFontSize(7);
-      doc.setFont('helvetica', 'normal');
-      doc.setTextColor(...C.muted);
-      doc.text(e.id, cols[0], y + 5);
-
-      doc.setTextColor(...C.text);
-      doc.text(formatDate(e.date), cols[1], y + 5);
-
-      doc.setFont('helvetica', 'bold');
-      doc.setTextColor(...rc);
-      doc.text(e.result, cols[2], y + 5);
-
-      doc.setFont('helvetica', 'normal');
-      doc.setTextColor(...C.text);
-      doc.text(`${e.confidence.toFixed(1)}%`, cols[3], y + 5);
-
-      doc.setTextColor(...C.muted);
-      doc.text(e.model, cols[4], y + 5);
-
-      y += 8;
-    });
-
-    if (patient.exams.length > 5) {
-      doc.setFontSize(7);
-      doc.setTextColor(...C.dim);
-      doc.text(`+ ${patient.exams.length - 5} exames anteriores nao exibidos.`, 14, y + 5);
-      y += 10;
-    }
-
-    y += 6;
-  }
-
-  // ════════════════════════════════════════════
-  // AVISO / DISCLAIMER
-  // ════════════════════════════════════════════
-  // Garante que o disclaimer não ultrapasse a página
-  const disclaimerH = 22;
-  if (y + disclaimerH > H - 20) {
-    doc.addPage();
-    y = 20;
-  }
-
-  doc.setFillColor(40, 30, 10);
-  doc.roundedRect(14, y, W - 28, disclaimerH, 3, 3, 'F');
-  doc.setDrawColor(...C.warning);
-  doc.setLineWidth(0.4);
-  doc.roundedRect(14, y, W - 28, disclaimerH, 3, 3, 'S');
-
-  doc.setFontSize(7.5);
-  doc.setFont('helvetica', 'bold');
-  doc.setTextColor(...C.warning);
-  doc.text('AVISO IMPORTANTE', 18, y + 7);
-
-  doc.setFontSize(7);
-  doc.setFont('helvetica', 'normal');
-  doc.setTextColor(220, 180, 100);
-  const disclaimerText =
-    'Este relatorio e gerado automaticamente por um modelo de inteligencia artificial com fins academicos e de pesquisa. ' +
-    'Os resultados NAO substituem o diagnostico clinico realizado por um profissional de saude habilitado. ' +
-    'Qualquer decisao medica deve ser tomada com base em avaliacao especializada completa.';
-  const splitDisclaimer = doc.splitTextToSize(disclaimerText, W - 36);
-  doc.text(splitDisclaimer, 18, y + 13);
-
-  y += disclaimerH + 6;
-
-  // ════════════════════════════════════════════
-  // RODAPÉ
-  // ════════════════════════════════════════════
-  doc.setFillColor(...C.dark);
-  doc.rect(0, H - 14, W, 14, 'F');
-
-  doc.setFontSize(6.5);
-  doc.setFont('helvetica', 'normal');
-  doc.setTextColor(...C.dim);
-  doc.text('CancerAnalytics — Plataforma de Triagem por IA', 14, H - 5);
-  doc.text(`Pagina 1 de 1  |  Versao do modelo: ${r.model}`, W - 14, H - 5, { align: 'right' });
-
-  // ── Salva o arquivo ──────────────────────────
-  const dateStr   = r.date.replace(/-/g, '');
-  const patName   = patient ? patient.name.split(' ').slice(0, 2).join('_') : 'SemPaciente';
-  const fileName  = `Relatorio_CA_${patName}_${dateStr}.pdf`;
-  doc.save(fileName);
-}
+  var uploadArea = document.getElementById('upload-area');
+  uploadArea.addEventListener('dragover', function(e) {
+    e.preventDefault();
+    uploadArea.classList.add('drag-over');
+  });
+  uploadArea.addEventListener('dragleave', function() {
+    uploadArea.classList.remove('drag-over');
+  });
+  uploadArea.addEventListener('drop', function(e) {
+    e.preventDefault();
+    uploadArea.classList.remove('drag-over');
+    if (e.dataTransfer.files[0]) handleFile(e.dataTransfer.files[0]);
+  });
+});
