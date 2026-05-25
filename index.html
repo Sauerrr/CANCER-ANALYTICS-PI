@@ -7,8 +7,8 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Sora:wght@300;400;500;600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="style.css">
-  <!-- jsPDF para geração de relatório -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <link rel="icon" href="/favicon/favicon.png">
+  
 </head>
 <body>
 
@@ -301,6 +301,8 @@
 
       <!-- Resultado -->
       <div class="result-panel" id="result-panel">
+
+        <!-- Cabeçalho do resultado -->
         <div class="result-header">
           <div class="result-icon" id="result-icon">🔬</div>
           <div>
@@ -309,8 +311,10 @@
           </div>
         </div>
 
+        <!-- Métricas -->
         <div class="result-metrics" id="result-metrics"></div>
 
+        <!-- Barras de probabilidade -->
         <div class="progress-bar-wrap">
           <div class="progress-label">
             <span>Leucemia</span>
@@ -331,26 +335,60 @@
           </div>
         </div>
 
+        <!-- ── GradCAM ── -->
+        <div class="gradcam-section">
+          <div class="gradcam-header">
+            <div>
+              <div class="gradcam-title">Mapa de Ativação — GradCAM</div>
+              <div class="gradcam-sub">Regiões com maior peso na decisão da rede neural</div>
+            </div>
+            <div class="gradcam-toggle">
+              <button class="toggle-btn active" id="btn-original"  onclick="setGradcamMode('original')">Original</button>
+              <button class="toggle-btn"        id="btn-heatmap"   onclick="setGradcamMode('heatmap')">Heatmap</button>
+              <button class="toggle-btn"        id="btn-overlay"   onclick="setGradcamMode('overlay')">Sobreposição</button>
+            </div>
+          </div>
+
+          <div class="gradcam-canvas-wrap">
+            <canvas id="gradcam-canvas"></canvas>
+            <div class="gradcam-loading" id="gradcam-loading">
+              <div class="spinner"></div>
+              <span>Computando ativações...</span>
+            </div>
+          </div>
+
+          <div class="gradcam-legend">
+            <div class="legend-bar"></div>
+            <div class="legend-labels">
+              <span>Baixa ativação</span>
+              <span>Alta ativação</span>
+            </div>
+          </div>
+
+          <div class="gradcam-info">
+            ℹ️ O GradCAM (<em>Gradient-weighted Class Activation Mapping</em>) destaca as regiões
+            da célula que mais influenciaram a classificação. Regiões em <strong style="color:#ff4d4d">vermelho</strong>
+            indicam alta ativação; em <strong style="color:#4dff99">verde</strong>, baixa ativação.
+          </div>
+        </div>
+
+        <!-- Botão PDF -->
+        <div style="margin-top:20px">
+          <button class="btn-pdf" id="btn-export-pdf" onclick="generatePDF()" style="display:none">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="15" height="15">
+              <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+              <polyline points="14 2 14 8 20 8"/>
+              <line x1="12" y1="18" x2="12" y2="12"/>
+              <line x1="9"  y1="15" x2="15" y2="15"/>
+            </svg>
+            Exportar Relatório PDF
+          </button>
+        </div>
+
         <div class="result-disclaimer">
           ⚠️ Este resultado é gerado por um modelo experimental com fins acadêmicos.
           Não substitui diagnóstico médico especializado.
         </div>
-
-        <!-- ── BOTÃO GERAR PDF ── -->
-        <div class="pdf-btn-wrap">
-          <button class="btn-pdf" id="btn-pdf" onclick="generatePDFReport()">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
-              <polyline points="14 2 14 8 20 8"/>
-              <line x1="16" y1="13" x2="8" y2="13"/>
-              <line x1="16" y1="17" x2="8" y2="17"/>
-              <polyline points="10 9 9 9 8 9"/>
-            </svg>
-            Gerar Relatório PDF
-          </button>
-          <span class="pdf-btn-hint">Exporta um relatório completo com dados do paciente e resultado da análise</span>
-        </div>
-
       </div>
 
     </div><!-- /view-upload -->
@@ -358,6 +396,15 @@
   </main>
 </div><!-- /screen-app -->
 
-<script src="script.js"></script>
+<!-- Ordem de carregamento importa: config → data → api → gradcam → pdf → ui → patients → auth → app -->
+<script src="js/config.js"></script>
+<script src="js/data.js"></script>
+<script src="js/api.js"></script>
+<script src="js/gradcam.js"></script>
+<script src="js/pdf.js"></script>
+<script src="js/ui.js"></script>
+<script src="js/patients.js"></script>
+<script src="js/auth.js"></script>
+<script src="js/app.js"></script>
 </body>
 </html>
