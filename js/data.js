@@ -1,7 +1,3 @@
-// ════════════════════════════════════════════════════════════
-//  data.js — Mock data
-//  Substituir por chamadas ao backend quando o banco estiver pronto.
-// ════════════════════════════════════════════════════════════
 
 var USERS = {
   'admin@ca.ai': {
