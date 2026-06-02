@@ -1,20 +1,13 @@
 // ============================================================
 //  pdf.js - Geracao do relatorio PDF
-//  Utiliza a biblioteca jsPDF (carregada via CDN sob demanda)
-//  para compor e exportar o relatorio completo da analise,
-//  incluindo resultado, metricas, GradCAM e dados do paciente.
+//  Utiliza a biblioteca jsPDF (carregada via CDN sob demanda).
+//  Layout redesenhado: documento medico profissional,
+//  fundo branco, tipografia hierarquica, secoes bem definidas.
 //  Depende de: config.js (lastResult, gradcamData, currentUser)
 // ============================================================
 
-/**
- * Ponto de entrada para a geracao do PDF.
- * Carrega a biblioteca jsPDF via CDN caso ainda nao esteja
- * disponivel no escopo global, evitando carregamento desnecessario
- * em sessoes sem exportacao.
- */
 function generatePDF() {
     if (!lastResult) return;
-
     if (typeof window.jspdf === 'undefined') {
         var script    = document.createElement('script');
         script.src    = 'https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js';
@@ -25,258 +18,351 @@ function generatePDF() {
     }
 }
 
-/**
- * Constroi o documento PDF e aciona o download no navegador.
- * Estrutura do relatorio:
- *   1. Cabecalho com identidade visual e metadados da analise
- *   2. Badge do resultado e percentual de confianca
- *   3. Cards de metricas (acuracia, recall, F1-score)
- *   4. Barras de probabilidade ALL vs HEM
- *   5. Painel GradCAM com imagem original e overlay
- *   6. Tabela de dados do paciente vinculado
- *   7. Aviso de uso academico e rodape
- */
 function buildPDF() {
     var jsPDF = window.jspdf.jsPDF;
     var doc   = new jsPDF({ unit: 'mm', format: 'a4' });
-    var W     = 210; // largura A4 em mm
-    var r     = lastResult;
-    var p     = r.patient;
+    var W = 210, H = 297;
+    var r = lastResult, p = r.patient;
 
-    // Paleta de cores alinhada ao design da interface
+    // ----------------------------------------------------------
+    // Paleta: documento medico profissional (fundo branco)
+    // ----------------------------------------------------------
     var C = {
-        bg     : [10,  13,  20],
-        surface: [17,  21,  32],
-        accent : [76, 180, 255],
-        danger : [255,  91, 107],
-        success: [77,  255, 195],
-        warning: [255, 184,  77],
-        muted  : [107, 116, 150],
-        border : [40,   46,  68],
-        white  : [255, 255, 255]
+        headerBg   : [15,  40,  80],    // azul escuro institucional
+        headerText : [255, 255, 255],
+        accent     : [30,  100, 200],   // azul medio para destaques
+        accentLight: [220, 232, 252],   // azul muito claro para fundos
+        danger     : [192,  30,  46],   // vermelho medico
+        dangerLight: [255, 235, 237],
+        success    : [22,  130,  80],   // verde medico
+        successLight:[225, 247, 237],
+        warning    : [180, 110,   0],   // amarelo escuro legivel
+        warningLight:[255, 248, 220],
+        text       : [30,   30,  30],   // texto principal
+        muted      : [110, 110, 120],   // texto secundario
+        border     : [210, 215, 225],   // bordas suaves
+        rowEven    : [247, 249, 252],   // linhas alternadas tabela
+        white      : [255, 255, 255],
+        pageNum    : [160, 160, 175]
     };
 
     var resultColor = r.result === 'POSITIVO' ? C.danger
                     : r.result === 'NEGATIVO'  ? C.success
                     : C.warning;
+    var resultBg    = r.result === 'POSITIVO' ? C.dangerLight
+                    : r.result === 'NEGATIVO'  ? C.successLight
+                    : C.warningLight;
+    var resultLabel = r.result === 'POSITIVO' ? 'INDICIOS DE LEUCEMIA DETECTADOS'
+                    : r.result === 'NEGATIVO'  ? 'CELULAS HEMATOLOGICAS NORMAIS'
+                    : 'RESULTADO INCONCLUSIVO';
 
-    // Atalhos locais para reducao de verbosidade
+    // Atalhos
     function sf(c) { doc.setFillColor(c[0], c[1], c[2]); }
     function st(c) { doc.setTextColor(c[0], c[1], c[2]); }
+    function sd(c) { doc.setDrawColor(c[0], c[1], c[2]); }
+    function line(x1, y1, x2, y2, color) {
+        sd(color || C.border); doc.setLineWidth(0.3); doc.line(x1, y1, x2, y2);
+    }
+    function sectionTitle(txt, yPos) {
+        st(C.accent); doc.setFont('helvetica', 'bold'); doc.setFontSize(9);
+        doc.text(txt.toUpperCase(), 14, yPos);
+        line(14, yPos + 1.5, W - 14, yPos + 1.5, C.accent);
+        return yPos + 7;
+    }
 
     var y = 0;
 
-    // ----------------------------------------------------------
-    // 1. Cabecalho
-    // ----------------------------------------------------------
-    sf(C.surface); doc.rect(0, 0, W, 36, 'F');
-    sf(C.accent);  doc.rect(0, 0, 4, 36, 'F');
+    // ==========================================================
+    // CABECALHO
+    // ==========================================================
+    sf(C.headerBg); doc.rect(0, 0, W, 28, 'F');
 
-    st(C.accent); doc.setFont('helvetica', 'bold'); doc.setFontSize(15);
-    doc.text('Cancer', 12, 13);
-    st(C.white);  doc.text('Analytics', 35, 13);
+    // Barra lateral colorida de resultado
+    var barColor = r.result === 'POSITIVO' ? C.danger
+                 : r.result === 'NEGATIVO'  ? [22, 160, 100]
+                 : [220, 160, 0];
+    doc.setFillColor(barColor[0], barColor[1], barColor[2]);
+    doc.rect(0, 0, 5, 28, 'F');
 
-    st(C.muted); doc.setFont('helvetica', 'normal'); doc.setFontSize(7.5);
-    doc.text('Plataforma de Triagem por IA - Uso Academico', 12, 19);
-    doc.text('Emitido em: ' + r.date,    W - 12, 13, { align: 'right' });
-    doc.text('Analista: '  + r.analyst,  W - 12, 19, { align: 'right' });
+    // Logo / titulo
+    st(C.headerText); doc.setFont('helvetica', 'bold'); doc.setFontSize(16);
+    doc.text('Cancer', 13, 11);
+    doc.setFontSize(16); doc.setFont('helvetica', 'normal');
+    doc.setTextColor(150, 195, 255);
+    doc.text('Analytics', 13 + doc.getTextWidth('Cancer') + 1.5, 11);
 
-    sf(C.border); doc.rect(0, 36, W, 0.3, 'F');
-    y = 44;
+    st([180, 210, 255]); doc.setFont('helvetica', 'normal'); doc.setFontSize(7.5);
+    doc.text('Plataforma de Triagem Hematologica por IA', 13, 17);
+    doc.text('Uso exclusivamente academico e experimental', 13, 22);
 
-    // ----------------------------------------------------------
-    // 2. Badge de resultado e confianca
-    // ----------------------------------------------------------
-    var bW = 80;
-    sf(resultColor);
-    doc.roundedRect(W / 2 - bW / 2, y, bW, 11, 2, 2, 'F');
+    // Metadados direita
+    st([180, 210, 255]); doc.setFont('helvetica', 'normal'); doc.setFontSize(7.5);
+    var rid = p ? p.id : 'N/A';
+    doc.text('Emitido em: ' + r.date,       W - 12, 11, { align: 'right' });
+    doc.text('Responsavel: ' + r.analyst,   W - 12, 16, { align: 'right' });
+    doc.text('ID Paciente: ' + rid,         W - 12, 21, { align: 'right' });
 
-    st(C.bg); doc.setFont('helvetica', 'bold'); doc.setFontSize(9);
-    var badgeLabel = r.result === 'POSITIVO' ? 'INDICIOS DE LEUCEMIA DETECTADOS'
-                   : r.result === 'NEGATIVO'  ? 'CELULAS NORMAIS'
-                   : 'RESULTADO INCONCLUSIVO';
-    doc.text(badgeLabel, W / 2, y + 7.5, { align: 'center' });
-    y += 16;
+    y = 35;
 
-    st(resultColor); doc.setFontSize(26); doc.setFont('helvetica', 'bold');
-    doc.text(r.confidence.toFixed(1) + '%', W / 2, y + 9, { align: 'center' });
+    // ==========================================================
+    // BADGE DE RESULTADO PRINCIPAL
+    // ==========================================================
+    sf(resultBg); sd(resultColor);
+    doc.setLineWidth(0.6);
+    doc.roundedRect(14, y, W - 28, 22, 3, 3, 'FD');
 
-    st(C.muted); doc.setFontSize(8); doc.setFont('helvetica', 'normal');
-    doc.text('confianca do modelo', W / 2, y + 16, { align: 'center' });
-    y += 24;
+    // Icone visual (quadrado colorido substituindo icone real)
+    doc.setFillColor(resultColor[0], resultColor[1], resultColor[2]);
+    doc.roundedRect(20, y + 5.5, 11, 11, 1.5, 1.5, 'F');
+    st(C.white); doc.setFont('helvetica', 'bold'); doc.setFontSize(9);
+    var icon = r.result === 'POSITIVO' ? '!' : r.result === 'NEGATIVO' ? 'N' : '?';
+    doc.text(icon, 25.5, y + 13, { align: 'center' });
 
-    // ----------------------------------------------------------
-    // 3. Cards de metricas
-    // ----------------------------------------------------------
-    var mW = 52, mGap = 5;
-    var mX = (W - (mW * 3 + mGap * 2)) / 2;
+    st(resultColor);
+    doc.setFont('helvetica', 'bold'); doc.setFontSize(11);
+    doc.text(resultLabel, 36, y + 10);
+    doc.setFont('helvetica', 'normal'); doc.setFontSize(8);
+    st(C.muted);
+    var subtext = r.result === 'POSITIVO'
+        ? 'Imagem analisada apresenta caracteristicas associadas a leucemia linfoide aguda (ALL).'
+        : r.result === 'NEGATIVO'
+        ? 'Nenhuma caracteristica patologica relevante identificada na amostra analisada.'
+        : 'Nivel de confianca insuficiente para determinacao conclusiva. Repetir exame.';
+    doc.text(subtext, 36, y + 17);
+
+    y += 29;
+
+    // ==========================================================
+    // METRICAS EM CARDS (3 colunas)
+    // ==========================================================
+    y = sectionTitle('Indicadores de Desempenho do Modelo', y);
+
+    var cardW = 55, cardGap = 6;
+    var cardX = (W - (cardW * 3 + cardGap * 2)) / 2;
     var metrics = [
-        ['Acuracia', r.acc + '%'],
-        ['Recall',   r.recall + '%'],
-        ['F1-Score', r.f1 + '%']
+        { label: 'Confianca da Analise', value: r.confidence.toFixed(1) + '%', sub: 'score da predicao atual', color: resultColor },
+        { label: 'Acuracia do Modelo',   value: r.acc + '%',                   sub: 'conjunto de validacao',   color: C.accent    },
+        { label: 'F1-Score',             value: r.f1  + '%',                   sub: 'media harmonica P/R',     color: C.accent    }
     ];
 
     for (var mi = 0; mi < metrics.length; mi++) {
-        var mx = mX + mi * (mW + mGap);
-        sf(C.surface); doc.roundedRect(mx, y, mW, 18, 2, 2, 'F');
-        st(C.accent); doc.setFont('helvetica', 'bold'); doc.setFontSize(13);
-        doc.text(metrics[mi][1], mx + mW / 2, y + 11, { align: 'center' });
-        st(C.muted);  doc.setFont('helvetica', 'normal'); doc.setFontSize(7);
-        doc.text(metrics[mi][0].toUpperCase(), mx + mW / 2, y + 16, { align: 'center' });
+        var mx = cardX + mi * (cardW + cardGap);
+        var m  = metrics[mi];
+        // Sombra simulada
+        sf([225, 230, 240]); doc.roundedRect(mx + 0.8, y + 0.8, cardW, 20, 2, 2, 'F');
+        // Card
+        sf(C.white); sd(C.border); doc.setLineWidth(0.3);
+        doc.roundedRect(mx, y, cardW, 20, 2, 2, 'FD');
+        // Barra de cor no topo do card
+        doc.setFillColor(m.color[0], m.color[1], m.color[2]);
+        doc.roundedRect(mx, y, cardW, 3, 2, 2, 'F');
+        doc.rect(mx, y + 1.5, cardW, 1.5, 'F'); // cobre cantos inferiores da barra
+        // Valor
+        st(m.color); doc.setFont('helvetica', 'bold'); doc.setFontSize(16);
+        doc.text(m.value, mx + cardW / 2, y + 13, { align: 'center' });
+        // Label
+        st(C.muted); doc.setFont('helvetica', 'normal'); doc.setFontSize(6.5);
+        doc.text(m.label.toUpperCase(), mx + cardW / 2, y + 17.5, { align: 'center' });
     }
-    y += 26;
+    y += 27;
 
-    // ----------------------------------------------------------
-    // 4. Barras de probabilidade ALL vs HEM
-    // ----------------------------------------------------------
-    var barX = 14, barW = W - 28;
+    // ==========================================================
+    // PROBABILIDADES (barras horizontais)
+    // ==========================================================
+    y = sectionTitle('Probabilidades por Classe', y);
 
-    st(C.muted); doc.setFont('helvetica', 'normal'); doc.setFontSize(8);
-    doc.text('Leucemia (ALL)', barX, y + 4);
-    doc.text(r.leukPct + '%', barX + barW, y + 4, { align: 'right' });
-    sf(C.border); doc.roundedRect(barX, y + 6, barW, 4, 1, 1, 'F');
-    sf(C.danger); doc.roundedRect(barX, y + 6, barW * parseFloat(r.leukPct) / 100, 4, 1, 1, 'F');
-    y += 13;
+    var barMargin = 14, barW2 = W - barMargin * 2 - 32;
+    var labelCol  = barMargin, valueCol = barMargin + 28, barCol = valueCol + 4, barRight = W - barMargin;
 
-    doc.text('Normal (HEM)', barX, y + 4);
-    doc.text(r.normPct + '%', barX + barW, y + 4, { align: 'right' });
-    sf(C.border);  doc.roundedRect(barX, y + 6, barW, 4, 1, 1, 'F');
-    sf(C.success); doc.roundedRect(barX, y + 6, barW * parseFloat(r.normPct) / 100, 4, 1, 1, 'F');
-    y += 16;
+    // Linha ALL
+    sf(C.rowEven); doc.rect(14, y - 3, W - 28, 10, 'F');
+    st(C.text); doc.setFont('helvetica', 'bold'); doc.setFontSize(8);
+    doc.text('ALL', labelCol, y + 3.5);
+    st(C.muted); doc.setFont('helvetica', 'normal'); doc.setFontSize(7);
+    doc.text('Leucemia', labelCol, y + 7);
 
-    // Votos da junta de modelos
+    // Barra fundo
+    var bx = barCol + 12, bw = barRight - bx - 18;
+    sf(C.border); doc.roundedRect(bx, y + 0.5, bw, 5, 1, 1, 'F');
+    // Barra preenchida
+    doc.setFillColor(C.danger[0], C.danger[1], C.danger[2]);
+    var wAll = bw * parseFloat(r.leukPct) / 100;
+    if (wAll > 2) doc.roundedRect(bx, y + 0.5, wAll, 5, 1, 1, 'F');
+    // Percentual
+    st(C.danger); doc.setFont('helvetica', 'bold'); doc.setFontSize(9);
+    doc.text(r.leukPct + '%', barRight - 1, y + 5, { align: 'right' });
+    y += 12;
+
+    // Linha HEM
+    st(C.text); doc.setFont('helvetica', 'bold'); doc.setFontSize(8);
+    doc.text('HEM', labelCol, y + 3.5);
+    st(C.muted); doc.setFont('helvetica', 'normal'); doc.setFontSize(7);
+    doc.text('Normal', labelCol, y + 7);
+
+    sf(C.border); doc.roundedRect(bx, y + 0.5, bw, 5, 1, 1, 'F');
+    doc.setFillColor(C.success[0], C.success[1], C.success[2]);
+    var wHem = bw * parseFloat(r.normPct) / 100;
+    if (wHem > 2) doc.roundedRect(bx, y + 0.5, wHem, 5, 1, 1, 'F');
+    st(C.success); doc.setFont('helvetica', 'bold'); doc.setFontSize(9);
+    doc.text(r.normPct + '%', barRight - 1, y + 5, { align: 'right' });
+    y += 12;
+
+    // Votos da junta
     if (r.votes) {
-        st(C.muted); doc.setFontSize(7.5);
+        sf(C.accentLight); doc.roundedRect(14, y, W - 28, 8, 1.5, 1.5, 'F');
+        st(C.accent); doc.setFont('helvetica', 'bold'); doc.setFontSize(7.5);
+        doc.text('Junta de Modelos (5 redes neurais):', 19, y + 5.5);
+        st(C.text); doc.setFont('helvetica', 'normal');
         doc.text(
-            'Votos da junta - ALL: ' + (r.votes.ALL || 0) + '  |  HEM: ' + (r.votes.HEM || 0),
-            W / 2, y + 4, { align: 'center' }
+            'Votos ALL: ' + (r.votes.ALL || 0) + '   |   Votos HEM: ' + (r.votes.HEM || 0),
+            19 + doc.getTextWidth('Junta de Modelos (5 redes neurais):') + 3, y + 5.5
         );
-        y += 10;
+        y += 13;
     }
 
-    // ----------------------------------------------------------
-    // 5. Painel GradCAM
-    // ----------------------------------------------------------
-    sf(C.border); doc.rect(14, y, W - 28, 0.3, 'F'); y += 6;
+    // ==========================================================
+    // GRADCAM
+    // ==========================================================
+    y = sectionTitle('Mapa de Ativacao XAI (GradCAM)', y);
 
-    st(C.white); doc.setFont('helvetica', 'bold'); doc.setFontSize(10);
-    doc.text('Mapa de Ativacao - GradCAM (DALI XAI)', 14, y);
-
-    st(C.muted); doc.setFont('helvetica', 'normal'); doc.setFontSize(7.5);
-    doc.text('Regioes com maior peso na decisao do consenso de modelos', 14, y + 5);
-    y += 10;
-
-    // Exporta o canvas atual do GradCAM (modo ativo na interface)
     var gradcanvas = document.getElementById('gradcam-canvas');
 
     if (gradcamData && gradcanvas && gradcanvas.width > 0) {
-        var imgW = 84, imgH = 84, gap = 8;
-        var iX   = (W - imgW * 2 - gap) / 2;
+        var imgSize = 76;
+        var totalImgW = imgSize * 2 + 8;
+        var imgStartX = (W - totalImgW) / 2;
+        var imgY = y;
 
-        // Imagem original a partir do preview do upload
+        // Moldura original
+        sf(C.white); sd(C.border); doc.setLineWidth(0.4);
+        doc.rect(imgStartX - 1, imgY - 1, imgSize + 2, imgSize + 2, 'FD');
+
         var previewImg = document.querySelector('#preview-img-wrap img');
         if (previewImg) {
             var origC = document.createElement('canvas');
             origC.width = origC.height = 480;
             origC.getContext('2d').drawImage(previewImg, 0, 0, 480, 480);
-            doc.addImage(origC.toDataURL('image/jpeg', 0.85), 'JPEG', iX, y, imgW, imgH);
+            doc.addImage(origC.toDataURL('image/jpeg', 0.9), 'JPEG', imgStartX, imgY, imgSize, imgSize);
         }
 
-        // Overlay GradCAM do canvas ativo na interface
-        doc.addImage(
-            gradcanvas.toDataURL('image/jpeg', 0.85),
-            'JPEG',
-            iX + imgW + gap, y, imgW, imgH
-        );
+        // Moldura overlay
+        sf(C.white); sd(resultColor); doc.setLineWidth(0.6);
+        doc.rect(imgStartX + imgSize + 6, imgY - 1, imgSize + 2, imgSize + 2, 'FD');
+        doc.addImage(gradcanvas.toDataURL('image/jpeg', 0.9), 'JPEG',
+            imgStartX + imgSize + 7, imgY, imgSize, imgSize);
 
-        st(C.muted); doc.setFontSize(7.5);
-        doc.text('Original',         iX + imgW / 2,            y + imgH + 5, { align: 'center' });
-        doc.text('GradCAM (overlay)', iX + imgW + gap + imgW / 2, y + imgH + 5, { align: 'center' });
+        // Labels
+        st(C.muted); doc.setFont('helvetica', 'normal'); doc.setFontSize(7);
+        doc.text('Imagem Original',          imgStartX + imgSize / 2,       imgY + imgSize + 5, { align: 'center' });
+        doc.text('GradCAM Overlay (DALI XAI)', imgStartX + imgSize + 7 + imgSize / 2, imgY + imgSize + 5, { align: 'center' });
 
-        // Legenda de cores do mapa de ativacao
-        var lgX = iX, lgY = y + imgH + 9, lgW = imgW * 2 + gap;
-        var gradColors = ['#0000ff', '#0088ff', '#00ffaa', '#aaff00', '#ffaa00', '#ff0000'];
-        for (var gi = 0; gi < gradColors.length; gi++) {
-            var rgb = hexToRgb(gradColors[gi]);
+        // Legenda de cores (gradiente)
+        var lgY = imgY + imgSize + 9, lgX = imgStartX, lgW2 = totalImgW;
+        var stops = ['#0033cc','#0099ff','#00ffcc','#aaff00','#ffcc00','#ff3300'];
+        var segW  = lgW2 / stops.length;
+        for (var gi = 0; gi < stops.length; gi++) {
+            var rgb = hexToRgb(stops[gi]);
             doc.setFillColor(rgb[0], rgb[1], rgb[2]);
-            doc.rect(lgX + gi * (lgW / 6), lgY, lgW / 6, 3, 'F');
+            doc.rect(lgX + gi * segW, lgY, segW, 3, 'F');
         }
         st(C.muted); doc.setFontSize(6.5);
-        doc.text('Baixa ativacao', lgX,        lgY + 7);
-        doc.text('Alta ativacao',  lgX + lgW,  lgY + 7, { align: 'right' });
-        y += imgH + 20;
+        doc.text('Baixa ativacao', lgX,          lgY + 7);
+        doc.text('Alta ativacao',  lgX + lgW2,   lgY + 7, { align: 'right' });
 
+        y += imgSize + 18;
     } else {
-        st(C.muted); doc.setFontSize(9);
-        doc.text('GradCAM nao disponivel para este resultado.', W / 2, y + 8, { align: 'center' });
-        y += 14;
+        sf(C.rowEven); doc.roundedRect(14, y, W - 28, 10, 1.5, 1.5, 'F');
+        st(C.muted); doc.setFont('helvetica', 'normal'); doc.setFontSize(8);
+        doc.text('Mapa de ativacao XAI nao disponivel para este resultado.', W / 2, y + 6.5, { align: 'center' });
+        y += 16;
     }
 
-    // ----------------------------------------------------------
-    // 6. Dados do paciente
-    // ----------------------------------------------------------
-    sf(C.border); doc.rect(14, y, W - 28, 0.3, 'F'); y += 6;
-
-    st(C.white); doc.setFont('helvetica', 'bold'); doc.setFontSize(10);
-    doc.text('Dados do Paciente', 14, y);
-    y += 7;
+    // ==========================================================
+    // DADOS DO PACIENTE (tabela alternada)
+    // ==========================================================
+    y = sectionTitle('Dados do Paciente', y);
 
     var fields = p ? [
-        ['Nome',           p.name],
-        ['ID',             p.id],
-        ['Idade / Sexo',   p.age + ' anos - ' + (p.sex === 'F' ? 'Feminino' : 'Masculino')],
-        ['Tipo Sanguineo', p.blood_type],
-        ['Historico',      p.diagnosis_history],
-        ['Arquivo',        r.fileName],
-        ['Modelo IA',      r.model]
+        ['Nome Completo',   p.name],
+        ['ID do Paciente',  p.id],
+        ['Idade',           p.age + ' anos'],
+        ['Sexo',            p.sex === 'F' ? 'Feminino' : 'Masculino'],
+        ['Tipo Sanguineo',  p.blood_type],
+        ['Historico Clinico', p.diagnosis_history],
+        ['Arquivo Analisado', r.fileName],
+        ['Modelo de IA',    r.model]
     ] : [
-        ['Paciente', 'Nao vinculado'],
-        ['Arquivo',  r.fileName],
-        ['Modelo',   r.model]
+        ['Paciente',         'Nao vinculado ao exame'],
+        ['Arquivo Analisado', r.fileName],
+        ['Modelo de IA',     r.model]
     ];
 
+    var rowH = 7.5;
+    // Cabecalho da tabela
+    sf(C.accent); doc.rect(14, y, W - 28, rowH, 'F');
+    st(C.white); doc.setFont('helvetica', 'bold'); doc.setFontSize(7.5);
+    doc.text('Campo', 19, y + 5);
+    doc.text('Valor', W - 19, y + 5, { align: 'right' });
+    y += rowH;
+
     for (var fi = 0; fi < fields.length; fi++) {
-        sf(C.surface); doc.rect(14, y, W - 28, 7, 'F');
-        st(C.muted); doc.setFont('helvetica', 'normal'); doc.setFontSize(8);
-        doc.text(fields[fi][0], 18, y + 5);
-        st(C.white); doc.setFont('helvetica', 'bold');
-        doc.text(String(fields[fi][1]), W - 16, y + 5, { align: 'right' });
-        sf(C.border); doc.rect(14, y + 7, W - 28, 0.2, 'F');
-        y += 7;
+        var rowBg = fi % 2 === 0 ? C.white : C.rowEven;
+        sf(rowBg); doc.rect(14, y, W - 28, rowH, 'F');
+        sd(C.border); doc.setLineWidth(0.2);
+        doc.rect(14, y, W - 28, rowH, 'S');
+
+        st(C.muted); doc.setFont('helvetica', 'normal'); doc.setFontSize(7.5);
+        doc.text(fields[fi][0], 19, y + 5);
+
+        st(C.text); doc.setFont('helvetica', 'bold'); doc.setFontSize(7.5);
+        var val = String(fields[fi][1]);
+        // Trunca valores muito longos
+        if (doc.getTextWidth(val) > 90) val = val.substring(0, 55) + '...';
+        doc.text(val, W - 19, y + 5, { align: 'right' });
+        y += rowH;
     }
-    y += 6;
+    y += 7;
 
-    // ----------------------------------------------------------
-    // 7. Aviso de uso academico e rodape
-    // ----------------------------------------------------------
-    if (y > 262) { doc.addPage(); y = 16; }
+    // ==========================================================
+    // AVISO LEGAL
+    // ==========================================================
+    if (y > 255) { doc.addPage(); y = 16; }
 
-    doc.setFillColor(40, 33, 10);
-    doc.roundedRect(14, y, W - 28, 14, 2, 2, 'F');
+    sd(C.warning); doc.setLineWidth(0.5);
+    doc.setFillColor(C.warningLight[0], C.warningLight[1], C.warningLight[2]);
+    doc.roundedRect(14, y, W - 28, 16, 2, 2, 'FD');
+
     st(C.warning); doc.setFont('helvetica', 'bold'); doc.setFontSize(7.5);
-    doc.text('AVISO', 18, y + 5);
-    doc.setFont('helvetica', 'normal');
+    doc.text('AVISO IMPORTANTE', 19, y + 6);
+    st([100, 70, 0]); doc.setFont('helvetica', 'normal'); doc.setFontSize(7);
     doc.text(
-        'Resultado experimental com fins academicos. Nao substitui diagnostico medico especializado.',
-        18, y + 10
+        'Este relatorio e gerado por inteligencia artificial com fins exclusivamente academicos e experimentais.',
+        19, y + 11
     );
+    doc.text(
+        'Nao substitui avaliacao, diagnostico ou prescricao de profissional de saude habilitado.',
+        19, y + 15
+    );
+    y += 22;
 
-    sf(C.border); doc.rect(14, 287, W - 28, 0.3, 'F');
-    st(C.muted); doc.setFontSize(7);
-    doc.text('Cancer Analytics - Plataforma Academica de Triagem por IA', 14, 292);
-    doc.text('Pagina 1', W - 14, 292, { align: 'right' });
+    // ==========================================================
+    // RODAPE
+    // ==========================================================
+    sf(C.headerBg); doc.rect(0, H - 12, W, 12, 'F');
+    st([150, 185, 240]); doc.setFont('helvetica', 'normal'); doc.setFontSize(6.5);
+    doc.text('Cancer Analytics — Plataforma Academica de Triagem Hematologica por IA', 14, H - 5.5);
+    doc.text('Pagina 1 de 1', W - 14, H - 5.5, { align: 'right' });
 
-    // Nome do arquivo de saida com ID do paciente e timestamp
+    // Linha divisoria acima do rodape
+    sf([50, 100, 200]); doc.rect(0, H - 13, W, 1, 'F');
+
+    // ==========================================================
+    // SALVA
+    // ==========================================================
     var patientId = p ? p.id : 'sem-paciente';
     doc.save('relatorio-' + patientId + '-' + Date.now() + '.pdf');
 }
 
-/**
- * Converte uma cor hexadecimal para um array RGB.
- *
- * @param {string} hex - cor no formato "#rrggbb"
- * @returns {number[]} array [r, g, b] com valores de 0 a 255
- */
 function hexToRgb(hex) {
     return [
         parseInt(hex.slice(1, 3), 16),

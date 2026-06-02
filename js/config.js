@@ -20,7 +20,7 @@ var HF_CONFIG = {
 
     // true  : chama a API DALI real (BASE_URL deve estar acessivel)
     // false : usa simulacao local sem chamada de rede
-    USE_REAL_API: false
+    USE_REAL_API: true
 };
 
 // ============================================================
