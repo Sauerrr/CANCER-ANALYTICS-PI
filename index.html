@@ -7,8 +7,8 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Sora:wght@300;400;500;600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="style.css">
-  <link rel="icon" href="/favicon/favicon.png">
-  
+  <link rel="icon" href="/favicon/favicon.png" type="image/png">
+
 </head>
 <body>
 
@@ -343,9 +343,10 @@
               <div class="gradcam-sub">Regiões com maior peso na decisão da rede neural</div>
             </div>
             <div class="gradcam-toggle">
-              <button class="toggle-btn active" id="btn-original"  onclick="setGradcamMode('original')">Original</button>
-              <button class="toggle-btn"        id="btn-heatmap"   onclick="setGradcamMode('heatmap')">Heatmap</button>
-              <button class="toggle-btn"        id="btn-overlay"   onclick="setGradcamMode('overlay')">Sobreposição</button>
+              <button class="toggle-btn active" id="btn-original" onclick="setGradcamMode('original')">Original</button>
+              <button class="toggle-btn"        id="btn-heatmap"  onclick="setGradcamMode('heatmap')">GradCAM</button>
+              <button class="toggle-btn"        id="btn-overlay"  onclick="setGradcamMode('overlay')">Sobreposicao</button>
+              <button class="toggle-btn"        id="btn-guided"   onclick="setGradcamMode('guided')">Guiado</button>
             </div>
           </div>
 

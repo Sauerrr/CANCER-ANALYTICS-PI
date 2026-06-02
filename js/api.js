@@ -1,130 +1,152 @@
-// ════════════════════════════════════════════════════════════
-//  api.js — Adapter HuggingFace Inference API
-//  Este é o único arquivo que muda quando o modelo for hospedado.
+// ============================================================
+//  api.js - Adapter DALI API
+//  Responsavel por toda comunicacao com a API DALI hospedada
+//  no HuggingFace Space (wandraski/dali-space).
+//  Unico arquivo que deve ser alterado em mudancas de contrato.
 //  Depende de: config.js
-// ════════════════════════════════════════════════════════════
+// ============================================================
 
 /**
- * Chama a Inference API do HuggingFace com a imagem.
+ * Envia a imagem para o endpoint /predict-consensus da API DALI
+ * e retorna a resposta bruta em JSON.
  *
- * A API de image-classification retorna um array ordenado por score:
- * [
- *   { "label": "ALL", "score": 0.9632 },
- *   { "label": "hem", "score": 0.0368 }
- * ]
+ * Contrato de envio (multipart/form-data):
+ *   - file             : binario da imagem
+ *   - target_class_name: classe alvo para calculo do XAI ("ALL")
  *
- * @param {File} imageFile
- * @returns {Promise<ParsedResult>}
+ * @param {File} imageFile - arquivo selecionado pelo usuario
+ * @returns {Promise<Object>} resposta bruta da API DALI
  */
-async function callHuggingFaceAPI(imageFile) {
-  var url     = HF_CONFIG.BASE_URL + HF_CONFIG.MODEL_ID;
-  var headers = { 'Content-Type': imageFile.type };
+async function callDALIAPI(imageFile) {
+    const formData = new FormData();
+    formData.append('file', imageFile);
+    formData.append('target_class_name', 'ALL');
 
-  if (HF_CONFIG.API_KEY) {
-    headers['Authorization'] = 'Bearer ' + HF_CONFIG.API_KEY;
-  }
+    const response = await fetch(HF_CONFIG.BASE_URL + '/predict-consensus', {
+        method: 'POST',
+        body  : formData
+    });
 
-  var response = await fetch(url, {
-    method:  'POST',
-    headers: headers,
-    body:    imageFile  // envia o binário direto
-  });
-
-  if (!response.ok) {
-    var errText = await response.text();
-    throw new Error('HuggingFace API erro ' + response.status + ': ' + errText);
-  }
-
-  var predictions = await response.json();
-  return parseHFResponse(predictions);
-}
-
-/**
- * Interpreta a resposta da API e normaliza para o formato
- * que o resto do front espera.
- *
- * @param {Array<{label: string, score: number}>} predictions
- * @returns {{ isPositive, isInconclusive, confidence, leukPct, normPct, rawLabel, rawScore }}
- */
-function parseHFResponse(predictions) {
-  if (!predictions || predictions.length === 0) {
-    throw new Error('Resposta vazia da API');
-  }
-
-  var top      = predictions[0];
-  var rawLabel = top.label;
-  var rawScore = top.score;
-
-  var labelUpper = rawLabel.toUpperCase();
-  var isLeukemia = HF_CONFIG.LEUKEMIA_LABELS.some(function(l) {
-    return l.toUpperCase() === labelUpper;
-  });
-  var isNormal = HF_CONFIG.NORMAL_LABELS.some(function(l) {
-    return l.toUpperCase() === labelUpper;
-  });
-
-  if (!isLeukemia && !isNormal) {
-    console.warn('[HF] Label nao mapeado: "' + rawLabel + '". Ajuste HF_CONFIG em config.js.');
-  }
-
-  var confidence     = rawScore * 100;
-  var isInconclusive = rawScore < HF_CONFIG.INCONCLUSIVE_THRESHOLD;
-  var isPositive     = isLeukemia && !isInconclusive;
-
-  // Soma scores por categoria (pode vir mais de 2 labels)
-  var leukScore = 0, normScore = 0;
-  predictions.forEach(function(p) {
-    var lbl = p.label.toUpperCase();
-    if (HF_CONFIG.LEUKEMIA_LABELS.some(function(l) { return l.toUpperCase() === lbl; })) {
-      leukScore += p.score;
-    } else if (HF_CONFIG.NORMAL_LABELS.some(function(l) { return l.toUpperCase() === lbl; })) {
-      normScore += p.score;
+    if (!response.ok) {
+        const errorText = await response.text();
+        throw new Error('DALI API erro ' + response.status + ': ' + errorText);
     }
-  });
 
-  // Fallback se só veio 1 label
-  if (leukScore === 0 && normScore === 0) {
-    leukScore = isLeukemia ? rawScore : 1 - rawScore;
-    normScore = 1 - leukScore;
-  }
-
-  var total   = leukScore + normScore || 1;
-  var leukPct = ((leukScore / total) * 100).toFixed(1);
-  var normPct = ((normScore / total) * 100).toFixed(1);
-
-  return {
-    isPositive:     isPositive,
-    isInconclusive: isInconclusive,
-    confidence:     confidence.toFixed(1),
-    leukPct:        leukPct,
-    normPct:        normPct,
-    rawLabel:       rawLabel,
-    rawScore:       rawScore
-  };
+    const raw = await response.json();
+    return raw;
 }
 
 /**
- * Mock local — simula resposta da API enquanto USE_REAL_API = false.
- * Remover quando o modelo estiver hospedado.
+ * Interpreta a resposta da API DALI e normaliza para o formato
+ * interno utilizado pelo restante do front-end.
  *
- * @returns {Promise<Array<{label, score}>>}
+ * Contrato confirmado da API (campos raiz):
+ * {
+ *   request_id      : string,
+ *   filename        : string,
+ *   final_prediction: { label, score_all, score_hem, confidence_level, status },
+ *   consensus       : { votes: { HEM, ALL }, weighted_probabilities: { HEM, ALL } },
+ *   models          : [ { name, status, raw_predicted_label, xai?, ... } ],
+ *   xai_consensus   : { all_models_returned_xai, models_with_valid_xai, ... },
+ *   audit           : { ... }
+ * }
+ *
+ * @param {Object} raw - resposta bruta retornada por callDALIAPI
+ * @returns {{
+ *   isPositive     : boolean,
+ *   isInconclusive : boolean,
+ *   confidence     : string,
+ *   leukPct        : string,
+ *   normPct        : string,
+ *   votes          : Object,
+ *   confidenceLevel: string,
+ *   xaiArtifacts   : Object|null
+ * }}
  */
-function mockAPIResponse() {
-  return new Promise(function(resolve) {
-    setTimeout(function() {
-      var rand      = Math.random();
-      var isLeuk    = rand > 0.45;
-      var isInconc  = !isLeuk && rand > 0.35;
-      var score     = isLeuk   ? 0.85 + Math.random() * 0.13
-                    : isInconc ? 0.55 + Math.random() * 0.14
-                    :            0.86 + Math.random() * 0.12;
-      var leukLabel = isLeuk || isInconc ? 'ALL' : 'hem';
-      var normLabel = isLeuk || isInconc ? 'hem' : 'ALL';
+function parseDALIResponse(raw) {
+    if (!raw || !raw.final_prediction) {
+        throw new Error('Resposta invalida ou vazia retornada pela API DALI.');
+    }
 
-      resolve([
-        { label: leukLabel, score: isLeuk || isInconc ? score : 1 - score },
-        { label: normLabel, score: isLeuk || isInconc ? 1 - score : score }
-      ]);
-    }, 3200);
-  });
+    const prediction = raw.final_prediction;
+    const label      = prediction.label;           // "ALL" ou "HEM"
+    const scoreAll   = prediction.score_all || 0;
+    const scoreHem   = prediction.score_hem || 0;
+    const confLevel  = prediction.confidence_level || 'baixa';
+
+    const isLeukemia   = label === 'ALL';
+    const isInconclusive = confLevel === 'baixa';
+    const isPositive   = isLeukemia && !isInconclusive;
+
+    const leukPct    = (scoreAll * 100).toFixed(1);
+    const normPct    = (scoreHem * 100).toFixed(1);
+    const confidence = (Math.max(scoreAll, scoreHem) * 100).toFixed(1);
+
+    // Votes vem de consensus.votes conforme contrato confirmado
+    const votes = (raw.consensus && raw.consensus.votes)
+        ? raw.consensus.votes
+        : { ALL: 0, HEM: 0 };
+
+    // Busca artefatos XAI percorrendo o array "models".
+    // Caminho confirmado: model.xai.artifacts.overlay_png_base64
+    var xaiArtifacts = null;
+    var models       = raw.models || [];
+
+    for (var i = 0; i < models.length; i++) {
+        var model = models[i];
+
+        if (
+            model.xai &&
+            model.xai.artifacts &&
+            (model.xai.artifacts.overlay_png_base64 || model.xai.artifacts.grad_cam_png_base64)
+        ) {
+            xaiArtifacts = model.xai.artifacts;
+            break;
+        }
+    }
+
+    return {
+        isPositive     : isPositive,
+        isInconclusive : isInconclusive,
+        confidence     : confidence,
+        leukPct        : leukPct,
+        normPct        : normPct,
+        votes          : votes,
+        confidenceLevel: confLevel,
+        xaiArtifacts   : xaiArtifacts
+    };
+}
+
+/**
+ * Simula a resposta da API DALI para uso em desenvolvimento
+ * enquanto USE_REAL_API = false em config.js.
+ * Retorna objeto ja normalizado, no mesmo formato de parseDALIResponse.
+ *
+ * @returns {Promise<Object>}
+ */
+function mockDALIResponse() {
+    return new Promise(function(resolve) {
+        setTimeout(function() {
+            const rand           = Math.random();
+            const isLeuk         = rand > 0.45;
+            const isInconclusive = !isLeuk && rand > 0.35;
+            const scoreAll       = isLeuk         ? 0.85 + Math.random() * 0.13
+                                 : isInconclusive ? 0.55 + Math.random() * 0.14
+                                 :                  0.05 + Math.random() * 0.15;
+            const scoreHem       = 1 - scoreAll;
+            const confLevel      = scoreAll > 0.70 ? 'alta'
+                                 : scoreAll > 0.50 ? 'moderada' : 'baixa';
+
+            resolve({
+                isPositive     : isLeuk && !isInconclusive,
+                isInconclusive : isInconclusive,
+                confidence     : (Math.max(scoreAll, scoreHem) * 100).toFixed(1),
+                leukPct        : (scoreAll * 100).toFixed(1),
+                normPct        : (scoreHem * 100).toFixed(1),
+                votes          : { ALL: isLeuk ? 4 : 1, HEM: isLeuk ? 1 : 4 },
+                confidenceLevel: confLevel,
+                xaiArtifacts   : null
+            });
+        }, 3000);
+    });
 }

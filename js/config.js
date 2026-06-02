@@ -1,52 +1,37 @@
-// ════════════════════════════════════════════════════════════
-//  config.js — Configurações globais e HuggingFace
-//  Carregado PRIMEIRO. Todos os outros arquivos dependem deste.
-// ════════════════════════════════════════════════════════════
+// ============================================================
+//  config.js - Configuracoes globais da aplicacao
+//  Primeiro arquivo carregado. Todos os modulos dependem deste.
+//  Altere apenas este arquivo para trocar de ambiente ou modelo.
+// ============================================================
 
 var HF_CONFIG = {
-  // ┌─────────────────────────────────────────────────────────┐
-  // │  PASSO 1 — Cole o ID do seu modelo aqui                 │
-  // │  Formato: "seu-usuario/nome-do-modelo"                  │
-  // │  Exemplo: "canceranalytics/leukemia-resnet50"           │
-  // └─────────────────────────────────────────────────────────┘
-  MODEL_ID: 'SEU_USUARIO/SEU_MODELO',
+    // URL base da API DALI hospedada no HuggingFace Space.
+    // Nao inclui trailing slash.
+    BASE_URL: 'https://wandraski-dali-space.hf.space',
 
-  // ┌─────────────────────────────────────────────────────────┐
-  // │  PASSO 2 — Cole sua HF API Key aqui                     │
-  // │  Obtenha em: huggingface.co/settings/tokens             │
-  // │  Deixe vazio '' para modelos públicos sem autenticação  │
-  // └─────────────────────────────────────────────────────────┘
-  API_KEY: '',
+    // Nome do modelo exibido na interface e no relatorio PDF.
+    MODEL_DISPLAY_NAME: 'DALI - Consenso de 5 Modelos',
 
-  // URL base da Inference API — não altere
-  BASE_URL: 'https://api-inference.huggingface.co/models/',
+    // Limiar abaixo do qual o resultado e tratado como INCONCLUSIVO.
+    // Baseado no campo confidence_level retornado pela API DALI.
+    // A API ja classifica: "alta", "moderada", "baixa".
+    // O front usa esse campo diretamente; este threshold e reserva local.
+    INCONCLUSIVE_THRESHOLD: 0.70,
 
-  // ┌─────────────────────────────────────────────────────────┐
-  // │  PASSO 3 — Mapeamento dos labels do modelo              │
-  // │  Ajuste com os labels exatos que seu modelo retorna.    │
-  // │  Exemplos: "ALL", "AML", "hem", "normal"               │
-  // └─────────────────────────────────────────────────────────┘
-  LEUKEMIA_LABELS: ['ALL', 'AML', 'all', 'leukemia', 'positive'],
-  NORMAL_LABELS:   ['hem', 'normal', 'HEM', 'healthy', 'negative'],
-
-  // Limiar abaixo do qual o resultado é INCONCLUSIVO (0–1)
-  INCONCLUSIVE_THRESHOLD: 0.70,
-
-  // Nome exibido na UI e no PDF
-  MODEL_DISPLAY_NAME: 'ResNet-50 — HuggingFace',
-
-  // true  → chama a API real (preencha MODEL_ID e API_KEY antes)
-  // false → usa simulação local (mock)
-  USE_REAL_API: false
+    // true  : chama a API DALI real (BASE_URL deve estar acessivel)
+    // false : usa simulacao local sem chamada de rede
+    USE_REAL_API: false
 };
 
-// ─── STATE GLOBAL ─────────────────────────────────────────────
-// Compartilhado entre todos os módulos via variáveis globais.
-// Quando migrar para ES Modules, transforme em exports.
+// ============================================================
+//  Estado global da aplicacao
+//  Compartilhado entre todos os modulos via escopo global.
+//  Quando migrar para ES Modules, converter em exports nomeados.
+// ============================================================
 
-var currentUser     = null;
-var uploadedFile    = null;
-var selectedPatient = null;
-var lastResult      = null;
-var gradcamMode     = 'overlay';
-var gradcamData     = null;
+var currentUser     = null;  // usuario autenticado
+var uploadedFile    = null;  // arquivo de imagem selecionado
+var selectedPatient = null;  // paciente em visualizacao
+var lastResult      = null;  // ultimo resultado normalizado para o PDF
+var gradcamData     = null;  // dados do GradCAM para renderizacao
+var gradcamMode     = 'overlay'; // modo ativo: original | heatmap | overlay
