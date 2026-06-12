@@ -6,7 +6,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Cancer Analytics</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
-<<<<<<< HEAD
   <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Sora:wght@300;400;500;600&display=swap" rel="stylesheet">
   <link rel="icon" type="image/x-icon" href="favicon/favicon.png">
 
@@ -35,7 +34,6 @@
       color: var(--text);
     }
 
-    /* ── Fundo com grid e gradiente ── */
     body {
       display: flex;
       align-items: center;
@@ -58,7 +56,6 @@
       pointer-events: none;
     }
 
-    /* ── Card de login ── */
     .card {
       position: relative;
       width: 420px;
@@ -75,7 +72,6 @@
       to   { opacity: 1; transform: translateY(0); }
     }
 
-    /* ── Logo ── */
     .logo {
       display: flex;
       align-items: center;
@@ -110,7 +106,6 @@
       color: var(--accent);
     }
 
-    /* ── Cabecalho do formulario ── */
     .card-title {
       font-size: 22px;
       font-weight: 600;
@@ -125,7 +120,6 @@
       line-height: 1.5;
     }
 
-    /* ── Campos ── */
     .field {
       margin-bottom: 18px;
     }
@@ -162,7 +156,6 @@
       color: var(--dim);
     }
 
-    /* ── Credenciais de demo ── */
     .hint {
       font-family: var(--mono);
       font-size: 12px;
@@ -179,7 +172,6 @@
       color: var(--accent);
     }
 
-    /* ── Botao ── */
     .btn {
       width: 100%;
       background: var(--accent);
@@ -204,7 +196,6 @@
       pointer-events: none;
     }
 
-    /* ── Erro ── */
     .error {
       font-size: 12px;
       color: var(--danger);
@@ -219,7 +210,6 @@
       opacity: 1;
     }
 
-    /* ── Rodape ── */
     .footer {
       margin-top: 32px;
       padding-top: 20px;
@@ -230,18 +220,10 @@
       line-height: 1.6;
     }
   </style>
-=======
-  <link
-    href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Sora:wght@300;400;500;600&display=swap"
-    rel="stylesheet">
-  <link rel="stylesheet" href="style.css">
-  <link rel="shortcut icon" href="favicon/favicon.png" type="image/x-icon">
->>>>>>> origin/main
 </head>
 
 <body>
 
-<<<<<<< HEAD
   <div class="card">
 
     <div class="logo">
@@ -252,7 +234,7 @@
                    0h-2V8h2v8z"/>
         </svg>
       </div>
-      <span class="logo-name">DALI<span></span>
+      <span class="logo-name">DALI<span></span></span>
     </div>
 
     <h1 class="card-title">Acesso ao sistema</h1>
@@ -298,82 +280,30 @@
       Powered by DALI &middot; HuggingFace Spaces
     </div>
 
-=======
-  <!-- ═══════════════════════════════════════════
-     LOGIN
-════════════════════════════════════════════ -->
-  <div id="screen-login" class="screen active">
-    <div class="login-box fade-in">
-
-      <div class="login-logo">
-        <div class="logo-icon">
-          <svg viewBox="0 0 24 24" fill="currentColor">
-            <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 14H9V8h2v8zm4 0h-2V8h2v8z" />
-          </svg>
-        </div>
-        <span class="logo-text">Cancer<span>Analytics</span></span>
-      </div>
-
-      <h1 class="login-title">Acesso ao Sistema</h1>
-      <p class="login-sub">Plataforma de triagem por IA</p>
-
-      <div class="field-group">
-        <div class="field-label">E-mail</div>
-        <input type="email" id="input-email" class="field-input" placeholder="medico@canceranalytics.ai">
-      </div>
-
-      <div class="field-group">
-        <div class="field-label">Senha</div>
-        <input type="password" id="input-password" class="field-input" placeholder="••••••••">
-      </div>
-
-      <div class="login-hint">
-        💡 Demo: <strong>admin@ca.ai</strong> / <strong>demo1234</strong>
-      </div>
-
-      <button class="btn-primary" onclick="doLogin()">Acessar →</button>
-      <div class="login-error" id="login-error">Credenciais inválidas. Tente novamente.</div>
-
-    </div>
->>>>>>> origin/main
   </div>
 
   <script>
-    // ============================================================
-    //  Credenciais validas para acesso demo.
-    //  Em producao, substituir por autenticacao real no backend.
-    // ============================================================
     var USERS = {
       'admin@ca.ai': 'demo1234'
     };
 
-<<<<<<< HEAD
-    // URL do Space DALI para redirecionamento apos autenticacao.
     var DALI_URL = 'https://huggingface.co/spaces/wandraski/dali-space';
 
-    /**
-     * Valida as credenciais inseridas e redireciona para o Space DALI
-     * em caso de sucesso, ou exibe mensagem de erro em caso de falha.
-     */
     function handleLogin() {
       var email    = document.getElementById('email').value.trim();
       var password = document.getElementById('password').value;
       var errorEl  = document.getElementById('error-msg');
       var btnEl    = document.getElementById('btn-login');
 
-      // Oculta erro anterior
       errorEl.classList.remove('visible');
 
-      // Validacao basica de campos vazios
       if (!email || !password) {
         errorEl.textContent = 'Preencha o e-mail e a senha para continuar.';
         errorEl.classList.add('visible');
         return;
       }
 
-      // Verifica credenciais
       if (USERS[email] && USERS[email] === password) {
-        // Feedback visual de carregamento antes do redirecionamento
         btnEl.textContent = 'Acessando...';
         btnEl.classList.add('loading');
 
@@ -385,362 +315,16 @@
         errorEl.textContent = 'Credenciais invalidas. Verifique e tente novamente.';
         errorEl.classList.add('visible');
 
-        // Limpa o campo de senha para nova tentativa
         document.getElementById('password').value = '';
         document.getElementById('password').focus();
       }
     }
 
-    // Permite submissao via tecla Enter em qualquer campo do formulario
     document.addEventListener('keydown', function(e) {
       if (e.key === 'Enter') handleLogin();
     });
   </script>
 
-=======
-  <!-- ═══════════════════════════════════════════
-     APP
-════════════════════════════════════════════ -->
-  <div id="screen-app" class="screen">
-
-    <!-- ── SIDEBAR ── -->
-    <aside class="sidebar">
-
-      <div class="sidebar-logo">
-        <div class="logo-icon">
-          <svg viewBox="0 0 24 24" fill="currentColor">
-            <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 14H9V8h2v8zm4 0h-2V8h2v8z" />
-          </svg>
-        </div>
-        <span class="logo-text">Cancer<span style="color:var(--accent)">Analytics</span></span>
-      </div>
-
-      <div class="nav-section-label">Menu</div>
-
-      <button class="nav-item active" data-view="dashboard" onclick="switchView('dashboard', this)">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-          <rect x="3" y="3" width="7" height="7" />
-          <rect x="14" y="3" width="7" height="7" />
-          <rect x="3" y="14" width="7" height="7" />
-          <rect x="14" y="14" width="7" height="7" />
-        </svg>
-        Dashboard
-      </button>
-
-      <button class="nav-item" data-view="patients" onclick="switchView('patients', this)">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-          <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
-          <circle cx="9" cy="7" r="4" />
-          <path d="M23 21v-2a4 4 0 0 0-3-3.87" />
-          <path d="M16 3.13a4 4 0 0 1 0 7.75" />
-        </svg>
-        Pacientes
-      </button>
-
-      <button class="nav-item" data-view="upload" onclick="switchView('upload', this)">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-          <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
-          <polyline points="17 8 12 3 7 8" />
-          <line x1="12" y1="3" x2="12" y2="15" />
-        </svg>
-        Nova Análise
-      </button>
-
-      <div class="sidebar-spacer"></div>
-
-      <div class="sidebar-user" onclick="doLogout()">
-        <div class="user-avatar" id="sidebar-avatar">DR</div>
-        <div class="user-info">
-          <div class="user-name" id="sidebar-name">Dr. Rodrigues</div>
-          <div class="user-role">Hematologista</div>
-        </div>
-        <button class="btn-logout" title="Sair">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
-            <polyline points="16 17 21 12 16 7" />
-            <line x1="21" y1="12" x2="9" y2="12" />
-          </svg>
-        </button>
-      </div>
-
-    </aside>
-
-    <!-- ── MAIN ── -->
-    <main class="main">
-
-      <!-- ──────────── DASHBOARD ──────────── -->
-      <div id="view-dashboard" class="view active fade-in">
-
-        <div class="page-header">
-          <div class="page-title">Dashboard</div>
-          <div class="page-sub">Visão geral dos exames — Maio 2025</div>
-        </div>
-
-        <div class="stats-row">
-          <div class="stat-card">
-            <div class="stat-label">Total de Pacientes</div>
-            <div class="stat-value accent">48</div>
-          </div>
-          <div class="stat-card">
-            <div class="stat-label">Exames este mês</div>
-            <div class="stat-value">127</div>
-          </div>
-          <div class="stat-card">
-            <div class="stat-label">Positivos (Leucemia)</div>
-            <div class="stat-value danger">14</div>
-          </div>
-          <div class="stat-card">
-            <div class="stat-label">Acurácia do modelo</div>
-            <div class="stat-value success">94.2%</div>
-          </div>
-        </div>
-
-        <div class="section-header">
-          <div class="section-title">Exames Recentes</div>
-          <button class="btn-ghost" onclick="switchView('patients', document.querySelector('[data-view=patients]'))">
-            Ver todos →
-          </button>
-        </div>
-
-        <div class="table-wrap">
-          <table>
-            <thead>
-              <tr>
-                <th>Paciente</th>
-                <th>Data</th>
-                <th>Resultado</th>
-                <th>Confiança</th>
-                <th></th>
-              </tr>
-            </thead>
-            <tbody id="dashboard-recent"></tbody>
-          </table>
-        </div>
-
-      </div><!-- /view-dashboard -->
-
-
-      <!-- ──────────── PACIENTES ──────────── -->
-      <div id="view-patients" class="view fade-in">
-
-        <div class="page-header">
-          <div class="page-title">Pacientes</div>
-          <div class="page-sub">Histórico completo de análises por paciente</div>
-        </div>
-
-        <div class="section-header">
-          <div class="section-title">Todos os pacientes</div>
-          <button class="btn-accent" onclick="switchView('upload', document.querySelector('[data-view=upload]'))">
-            + Nova Análise
-          </button>
-        </div>
-
-        <div class="table-wrap">
-          <table>
-            <thead>
-              <tr>
-                <th>Nome</th>
-                <th>ID</th>
-                <th>Idade / Sexo</th>
-                <th>Último exame</th>
-                <th>Status</th>
-                <th>Exames</th>
-                <th></th>
-              </tr>
-            </thead>
-            <tbody id="patients-table-body"></tbody>
-          </table>
-        </div>
-
-      </div><!-- /view-patients -->
-
-
-      <!-- ──────────── DETALHE DO PACIENTE ──────────── -->
-      <div id="view-patient-detail" class="view fade-in">
-
-        <button class="back-btn" onclick="switchView('patients', document.querySelector('[data-view=patients]'))">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <polyline points="15 18 9 12 15 6" />
-          </svg>
-          Voltar para pacientes
-        </button>
-
-        <div class="patient-header" id="detail-header"></div>
-
-        <div class="detail-grid">
-          <div class="detail-card">
-            <div class="detail-card-title">Dados Clínicos</div>
-            <div id="detail-clinical"></div>
-          </div>
-          <div class="detail-card">
-            <div class="detail-card-title">Último Resultado IA</div>
-            <div id="detail-last-result"></div>
-          </div>
-        </div>
-
-        <div class="section-header" style="margin-bottom:16px">
-          <div class="section-title">Histórico de Exames</div>
-          <button class="btn-accent" onclick="switchView('upload', document.querySelector('[data-view=upload]'))">
-            + Novo Exame
-          </button>
-        </div>
-
-        <div class="exam-list" id="detail-exams"></div>
-
-      </div><!-- /view-patient-detail -->
-
-
-      <!-- ──────────── NOVA ANÁLISE ──────────── -->
-      <div id="view-upload" class="view fade-in">
-
-        <div class="page-header">
-          <div class="page-title">Nova Análise</div>
-          <div class="page-sub">Envie uma imagem microscópica para classificação por IA</div>
-        </div>
-
-        <!-- Seleção de paciente -->
-        <div class="patient-select-wrap">
-          <div class="field-label"
-            style="font-size:11px;text-transform:uppercase;letter-spacing:.5px;color:var(--text-muted);margin-bottom:8px;">
-            Vincular ao Paciente
-          </div>
-          <select class="select-field" id="patient-select">
-            <option value="">— Selecione um paciente —</option>
-          </select>
-        </div>
-
-        <!-- Upload -->
-        <input type="file" id="upload-file" accept="image/*">
-        <div class="upload-area" id="upload-area" onclick="document.getElementById('upload-file').click()">
-          <div class="upload-icon">🔬</div>
-          <div class="upload-title">Arraste a imagem aqui ou clique para selecionar</div>
-          <div class="upload-sub">Imagem microscópica de célula sanguínea (esfregaço)</div>
-          <div class="upload-formats">Formatos aceitos: JPG · PNG · TIFF · BMP</div>
-        </div>
-
-        <!-- Preview -->
-        <div class="upload-preview" id="upload-preview">
-          <div class="preview-img" id="preview-img-wrap">🔬</div>
-          <div class="preview-info">
-            <div class="preview-name" id="preview-name">—</div>
-            <div class="preview-size" id="preview-size">—</div>
-          </div>
-          <button class="btn-ghost" onclick="clearUpload()">Remover</button>
-        </div>
-
-        <!-- Botão analisar -->
-        <button class="btn-primary" id="btn-analyze" onclick="runAnalysis()" style="max-width:280px" disabled>
-          Analisar com IA →
-        </button>
-
-        <!-- Loading -->
-        <div class="analyzing-overlay" id="analyzing-overlay">
-          <div class="spinner"></div>
-          <div class="analyzing-text" id="analyzing-text">Pré-processando imagem...</div>
-          <div class="analyzing-step" id="analyzing-step">Normalizando pixels</div>
-        </div>
-
-        <!-- Resultado -->
-        <div class="result-panel" id="result-panel">
-
-          <!-- Cabeçalho do resultado -->
-          <div class="result-header">
-            <div class="result-icon" id="result-icon">🔬</div>
-            <div>
-              <div class="result-verdict" id="result-verdict">—</div>
-              <div class="result-sub" id="result-sub">—</div>
-            </div>
-          </div>
-
-          <!-- Métricas -->
-          <div class="result-metrics" id="result-metrics"></div>
-
-          <!-- Barras de probabilidade -->
-          <div class="progress-bar-wrap">
-            <div class="progress-label">
-              <span>Leucemia</span>
-              <span id="bar-leukemia-pct">—</span>
-            </div>
-            <div class="progress-track">
-              <div class="progress-fill danger" id="bar-leukemia" style="width:0%"></div>
-            </div>
-          </div>
-
-          <div class="progress-bar-wrap" style="margin-top:10px">
-            <div class="progress-label">
-              <span>Normal</span>
-              <span id="bar-normal-pct">—</span>
-            </div>
-            <div class="progress-track">
-              <div class="progress-fill success" id="bar-normal" style="width:0%"></div>
-            </div>
-          </div>
-
-          <!-- ── GradCAM ── -->
-          <div class="gradcam-section">
-            <div class="gradcam-header">
-              <div>
-                <div class="gradcam-title">Mapa de Ativação — GradCAM</div>
-                <div class="gradcam-sub">Regiões com maior peso na decisão da rede neural</div>
-              </div>
-              <div class="gradcam-toggle">
-                <button class="toggle-btn active" id="btn-original"
-                  onclick="setGradcamMode('original')">Original</button>
-                <button class="toggle-btn" id="btn-heatmap" onclick="setGradcamMode('heatmap')">Heatmap</button>
-                <button class="toggle-btn" id="btn-overlay" onclick="setGradcamMode('overlay')">Sobreposição</button>
-              </div>
-            </div>
-
-            <div class="gradcam-canvas-wrap">
-              <canvas id="gradcam-canvas"></canvas>
-              <div class="gradcam-loading" id="gradcam-loading">
-                <div class="spinner"></div>
-                <span>Computando ativações...</span>
-              </div>
-            </div>
-
-            <div class="gradcam-legend">
-              <div class="legend-bar"></div>
-              <div class="legend-labels">
-                <span>Baixa ativação</span>
-                <span>Alta ativação</span>
-              </div>
-            </div>
-
-            <div class="gradcam-info">
-              ℹ️ O GradCAM (<em>Gradient-weighted Class Activation Mapping</em>) destaca as regiões
-              da célula que mais influenciaram a classificação. Regiões em <strong
-                style="color:#ff4d4d">vermelho</strong>
-              indicam alta ativação; em <strong style="color:#4dff99">verde</strong>, baixa ativação.
-            </div>
-          </div>
-
-          <!-- Botão PDF -->
-          <div style="margin-top:20px">
-            <button class="btn-pdf" id="btn-export-pdf" onclick="generatePDF()" style="display:none">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="15" height="15">
-                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
-                <polyline points="14 2 14 8 20 8" />
-                <line x1="12" y1="18" x2="12" y2="12" />
-                <line x1="9" y1="15" x2="15" y2="15" />
-              </svg>
-              Exportar Relatório PDF
-            </button>
-          </div>
-
-          <div class="result-disclaimer">
-            ⚠️ Este resultado é gerado por um modelo de IA.
-            Não substitui diagnóstico médico especializado.
-          </div>
-        </div>
-
-      </div><!-- /view-upload -->
-
-    </main>
-  </div><!-- /screen-app -->
-
-  <script src="script.js"></script>
->>>>>>> origin/main
 </body>
 
 </html>
