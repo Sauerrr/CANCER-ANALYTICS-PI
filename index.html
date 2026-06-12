@@ -4,17 +4,301 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Cancer Analytics — Triagem Leucemia</title>
+  <title>Cancer Analytics</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
+<<<<<<< HEAD
+  <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Sora:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <link rel="icon" type="image/x-icon" href="favicon/favicon.png">
+
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg      : #0a0d14;
+      --surface : #111520;
+      --surface2: #181d2e;
+      --border  : rgba(255,255,255,0.07);
+      --accent  : #4cb4ff;
+      --accent-g: rgba(76,180,255,0.12);
+      --text    : #e8eaf2;
+      --muted   : #6b7496;
+      --dim     : #3d4460;
+      --danger  : #ff5b6b;
+      --font    : 'Sora', sans-serif;
+      --mono    : 'DM Mono', monospace;
+    }
+
+    html, body {
+      height: 100%;
+      font-family: var(--font);
+      background: var(--bg);
+      color: var(--text);
+    }
+
+    /* ── Fundo com grid e gradiente ── */
+    body {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      background:
+        radial-gradient(ellipse 80% 50% at 50% -10%, rgba(76,180,255,0.09) 0%, transparent 60%),
+        var(--bg);
+      position: relative;
+      overflow: hidden;
+    }
+
+    body::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background:
+        repeating-linear-gradient(0deg,   transparent, transparent 39px, rgba(255,255,255,0.018) 39px, rgba(255,255,255,0.018) 40px),
+        repeating-linear-gradient(90deg,  transparent, transparent 39px, rgba(255,255,255,0.018) 39px, rgba(255,255,255,0.018) 40px);
+      pointer-events: none;
+    }
+
+    /* ── Card de login ── */
+    .card {
+      position: relative;
+      width: 420px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 48px 40px;
+      box-shadow: 0 0 80px rgba(76,180,255,0.05), 0 24px 48px rgba(0,0,0,0.4);
+      animation: rise 0.4s ease both;
+    }
+
+    @keyframes rise {
+      from { opacity: 0; transform: translateY(16px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    /* ── Logo ── */
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 40px;
+    }
+
+    .logo-mark {
+      width: 40px;
+      height: 40px;
+      background: var(--accent);
+      border-radius: 11px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .logo-mark svg {
+      width: 22px;
+      height: 22px;
+      color: #0a0d14;
+    }
+
+    .logo-name {
+      font-size: 18px;
+      font-weight: 600;
+      letter-spacing: -0.4px;
+    }
+
+    .logo-name span {
+      color: var(--accent);
+    }
+
+    /* ── Cabecalho do formulario ── */
+    .card-title {
+      font-size: 22px;
+      font-weight: 600;
+      letter-spacing: -0.5px;
+      margin-bottom: 6px;
+    }
+
+    .card-sub {
+      font-size: 13px;
+      color: var(--muted);
+      margin-bottom: 36px;
+      line-height: 1.5;
+    }
+
+    /* ── Campos ── */
+    .field {
+      margin-bottom: 18px;
+    }
+
+    .field-label {
+      display: block;
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.6px;
+      color: var(--muted);
+      font-weight: 500;
+      margin-bottom: 8px;
+    }
+
+    .field-input {
+      width: 100%;
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 12px 16px;
+      font-family: var(--font);
+      font-size: 14px;
+      color: var(--text);
+      outline: none;
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+
+    .field-input:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px rgba(76,180,255,0.08);
+    }
+
+    .field-input::placeholder {
+      color: var(--dim);
+    }
+
+    /* ── Credenciais de demo ── */
+    .hint {
+      font-family: var(--mono);
+      font-size: 12px;
+      color: var(--muted);
+      background: var(--accent-g);
+      border: 1px solid rgba(76,180,255,0.2);
+      border-radius: 8px;
+      padding: 10px 14px;
+      margin-bottom: 28px;
+      line-height: 1.6;
+    }
+
+    .hint strong {
+      color: var(--accent);
+    }
+
+    /* ── Botao ── */
+    .btn {
+      width: 100%;
+      background: var(--accent);
+      color: #0a0d14;
+      font-family: var(--font);
+      font-size: 14px;
+      font-weight: 600;
+      border: none;
+      border-radius: 8px;
+      padding: 14px;
+      cursor: pointer;
+      transition: opacity 0.2s, transform 0.15s;
+      letter-spacing: -0.1px;
+    }
+
+    .btn:hover  { opacity: 0.88; }
+    .btn:active { transform: scale(0.985); }
+
+    .btn.loading {
+      opacity: 0.7;
+      cursor: not-allowed;
+      pointer-events: none;
+    }
+
+    /* ── Erro ── */
+    .error {
+      font-size: 12px;
+      color: var(--danger);
+      text-align: center;
+      margin-top: 14px;
+      min-height: 16px;
+      opacity: 0;
+      transition: opacity 0.2s;
+    }
+
+    .error.visible {
+      opacity: 1;
+    }
+
+    /* ── Rodape ── */
+    .footer {
+      margin-top: 32px;
+      padding-top: 20px;
+      border-top: 1px solid var(--border);
+      font-size: 11px;
+      color: var(--dim);
+      text-align: center;
+      line-height: 1.6;
+    }
+  </style>
+=======
   <link
     href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Sora:wght@300;400;500;600&display=swap"
     rel="stylesheet">
   <link rel="stylesheet" href="style.css">
   <link rel="shortcut icon" href="favicon/favicon.png" type="image/x-icon">
+>>>>>>> origin/main
 </head>
 
 <body>
 
+<<<<<<< HEAD
+  <div class="card">
+
+    <div class="logo">
+      <div class="logo-mark">
+        <svg viewBox="0 0 24 24" fill="currentColor">
+          <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10
+                   10-4.48 10-10S17.52 2 12 2zm-1 14H9V8h2v8zm4
+                   0h-2V8h2v8z"/>
+        </svg>
+      </div>
+      <span class="logo-name">DALI<span></span>
+    </div>
+
+    <h1 class="card-title">Acesso ao sistema</h1>
+    <p class="card-sub">Plataforma de triagem por inteligencia artificial aplicada a leucemia.</p>
+
+    <div class="field">
+      <label class="field-label" for="email">E-mail</label>
+      <input
+        id="email"
+        type="email"
+        class="field-input"
+        placeholder="usuario@canceranalytics.ai"
+        autocomplete="email"
+      >
+    </div>
+
+    <div class="field">
+      <label class="field-label" for="password">Senha</label>
+      <input
+        id="password"
+        type="password"
+        class="field-input"
+        placeholder="••••••••"
+        autocomplete="current-password"
+      >
+    </div>
+
+    <div class="hint">
+      Credenciais de acesso demo:<br>
+      <strong>admin@ca.ai</strong> &nbsp;/&nbsp; <strong>demo1234</strong>
+    </div>
+
+    <button class="btn" id="btn-login" onclick="handleLogin()">
+      Entrar no sistema
+    </button>
+
+    <div class="error" id="error-msg">
+      Credenciais invalidas. Verifique e tente novamente.
+    </div>
+
+    <div class="footer">
+      Cancer Analytics &mdash; Projeto Academico<br>
+      Powered by DALI &middot; HuggingFace Spaces
+    </div>
+
+=======
   <!-- ═══════════════════════════════════════════
      LOGIN
 ════════════════════════════════════════════ -->
@@ -51,9 +335,69 @@
       <div class="login-error" id="login-error">Credenciais inválidas. Tente novamente.</div>
 
     </div>
+>>>>>>> origin/main
   </div>
 
+  <script>
+    // ============================================================
+    //  Credenciais validas para acesso demo.
+    //  Em producao, substituir por autenticacao real no backend.
+    // ============================================================
+    var USERS = {
+      'admin@ca.ai': 'demo1234'
+    };
 
+<<<<<<< HEAD
+    // URL do Space DALI para redirecionamento apos autenticacao.
+    var DALI_URL = 'https://huggingface.co/spaces/wandraski/dali-space';
+
+    /**
+     * Valida as credenciais inseridas e redireciona para o Space DALI
+     * em caso de sucesso, ou exibe mensagem de erro em caso de falha.
+     */
+    function handleLogin() {
+      var email    = document.getElementById('email').value.trim();
+      var password = document.getElementById('password').value;
+      var errorEl  = document.getElementById('error-msg');
+      var btnEl    = document.getElementById('btn-login');
+
+      // Oculta erro anterior
+      errorEl.classList.remove('visible');
+
+      // Validacao basica de campos vazios
+      if (!email || !password) {
+        errorEl.textContent = 'Preencha o e-mail e a senha para continuar.';
+        errorEl.classList.add('visible');
+        return;
+      }
+
+      // Verifica credenciais
+      if (USERS[email] && USERS[email] === password) {
+        // Feedback visual de carregamento antes do redirecionamento
+        btnEl.textContent = 'Acessando...';
+        btnEl.classList.add('loading');
+
+        setTimeout(function() {
+          window.location.href = DALI_URL;
+        }, 800);
+
+      } else {
+        errorEl.textContent = 'Credenciais invalidas. Verifique e tente novamente.';
+        errorEl.classList.add('visible');
+
+        // Limpa o campo de senha para nova tentativa
+        document.getElementById('password').value = '';
+        document.getElementById('password').focus();
+      }
+    }
+
+    // Permite submissao via tecla Enter em qualquer campo do formulario
+    document.addEventListener('keydown', function(e) {
+      if (e.key === 'Enter') handleLogin();
+    });
+  </script>
+
+=======
   <!-- ═══════════════════════════════════════════
      APP
 ════════════════════════════════════════════ -->
@@ -396,6 +740,7 @@
   </div><!-- /screen-app -->
 
   <script src="script.js"></script>
+>>>>>>> origin/main
 </body>
 
 </html>
